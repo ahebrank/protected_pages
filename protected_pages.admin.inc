@@ -80,7 +80,8 @@ function protected_pages_get_pages_list() {
   $rows = array();
   $count = 1;
   foreach ($result as $data) {
-    $rows[] = array('data' =>
+    $rows[] = array(
+      'data' =>
       array(
         $count,
         $data->path,
@@ -125,6 +126,7 @@ function protected_pages_configure_validate($form, &$form_state) {
     form_set_error('path', t('Duplicate path entry is not allowed. There is already a path or its alias exists.'));
   }
 }
+
 /**
  * Ajax submit callback for add protected page form.
  */
@@ -138,7 +140,7 @@ function protected_pages_configure_submit_callback($form, &$form_state) {
       'password' => sha1(trim(check_plain($form_state['values']['password']))),
       'path' => check_plain($form_state['values']['path']),
     ))->execute();
-    
+
     drupal_set_message('The protected page settings has been successfully saved.');
     $form['rules_list']['pages_table']['#markup'] = protected_pages_get_pages_list();
     $form['rules_list']['path']['#value'] = '';
@@ -272,7 +274,13 @@ function protected_pages_send_email($form, &$form_state, $pid) {
   $form['send_email_box'] = array(
     '#type' => 'fieldset',
     '#title' => t('Send email'),
-    '#description' => t('You send details of this protected page by email to multiple users. Please click !here to configure email settings.', array('!here' => l(t('here'), 'admin/config/system/protected_pages/settings', array('query' => $destination)))),
+    '#description' => t('You send details of this protected page by email to multiple users. Please click !here to configure email settings.', array(
+      '!here' => l(t('here'), 'admin/config/system/protected_pages/settings', array(
+        'query' => $destination,
+          )
+      )
+        )
+    ),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
@@ -326,12 +334,11 @@ function protected_pages_send_email_validate($form, &$form_state) {
         $emails[$key] = $email;
       }
     }
-    else {      
+    else {
       unset($emails[$key]);
     }
   }
   $form_state['validated_recipents'] = implode(', ', $emails);
-
 }
 
 /**
@@ -387,7 +394,7 @@ function protected_pages_settings() {
       'per_page_or_global' => t('Allow per page password or Global password'),
       'only_global' => t('Allow Only Global'),
     ),
-    '#description' => t('Please select the appropriate option for protected pages handling.') . 
+    '#description' => t('Please select the appropriate option for protected pages handling.') .
     '<br />' . theme('item_list', array('items' => $global_password_help_text)),
   );
 

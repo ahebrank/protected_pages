@@ -29,7 +29,7 @@ function protected_pages_schema() {
         'length' => '255',
         'not null' => TRUE,
       ),
-     ),
+    ),
     'indexes' => array(
       'path' => array('path'),
     ),
