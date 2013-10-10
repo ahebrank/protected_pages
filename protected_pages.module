@@ -2,8 +2,8 @@
 
 /**
  * @file
- * This module allows you to protect any page of your website by secure password. 
- * You can enter urls of pages to protect and set password per page.
+ * This module allows you to protect any page of your website by secure 
+ * password. You can enter urls of pages to protect and set password per page.
  * Admin (uid = 1) or user with bypass protection permission can view page.
  */
 
@@ -81,7 +81,7 @@ function protected_pages_menu() {
     'description' => 'Here you can enter the password for protected pages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('protected_pages_enter_password'),
-    'access callback' => 'protected_page_access_callback',
+    'access callback' => 'protected_pages_access_callback',
     'type' => MENU_CALLBACK,
     'file' => 'protected_pages.inc',
   );
@@ -91,7 +91,7 @@ function protected_pages_menu() {
 /**
  * Callback function to determine who can enter a password.
  */
-function protected_page_access_callback() {
+function protected_pages_access_callback() {
   global $user;
 
   if ($user->uid == 1) {
@@ -156,7 +156,7 @@ function protected_pages_is_page_locked($current_path, $normal_path) {
  * Title Callback for enter password page.
  */
 function protected_pages_get_title() {
-  return variable_get('protected_pages_title', t('Protected Page -- Enter password'));
+  return check_plain(variable_get('protected_pages_title', t('Protected Page -- Enter password')));
 }
 
 /**
@@ -186,16 +186,11 @@ Thank you.
 /**
  * Implements hook_mail(). 
  */
-function protected_pages_mail($key, &$message, $params) {
-
-  $options = array(
-    'langcode' => $message['language']->language,
-  );
-
+function protected_pages_mail($key, &$message, $params) {  
   switch ($key) {
     case 'protected_pages_details_mail':
       $tokens = array('[protected-page-url]', '[site-name]');
-      $replcements = array($params['protected_page_url'], variable_get('site_name', ''));
+      $replcements = array($params['protected_page_url'], check_plain(variable_get('site_name', '')));
 
       $body = str_replace($tokens, $replcements, $params['body']);
 

@@ -4,6 +4,10 @@
  * @file
  * Provides page callbacks for configuration page.
  */
+
+/**
+ * Callback function for add protected page.
+ */
 function protected_pages_configure($form, &$form_state) {
 
   $form['rules_list'] = array(
@@ -45,10 +49,10 @@ function protected_pages_configure($form, &$form_state) {
 }
 
 /**
- *  Callback to generate list of protected pages.
+ * Callback to generate list of protected pages.
  */
 function protected_pages_get_pages_list() {
-  
+
   $header = array(
     array(
       'data' => t('#'),
@@ -64,15 +68,15 @@ function protected_pages_get_pages_list() {
       'width' => '30%',
     ),
   );
-  
-  $rows = array();  
+
+  $rows = array();
   $query = db_select('protected_pages', 'pp')->extend('PagerDefault')->extend('TableSort');
   $query->fields('pp')
       ->limit(20)
       ->orderByHeader($header);
-  
+
   $result = $query->execute();
-  
+
   $rows = array();
   $count = 1;
   foreach ($result as $data) {
@@ -83,27 +87,27 @@ function protected_pages_get_pages_list() {
         l(t('Edit'), "admin/config/system/protected_pages/" . $data->pid . "/edit"),
         l(t('Delete'), 'admin/config/system/protected_pages/' . $data->pid . "/delete"),
         l(t('Send E-mail'), 'admin/config/system/protected_pages/' . $data->pid . "/send_email"),
-      )
+      ),
     );
     $count++;
   }
-  
+
   $output = theme_table(
           array(
             "header" => $header,
             "rows" => $rows,
             "attributes" => array('width' => "500"),
-            "sticky" => true,
+            "sticky" => TRUE,
             "caption" => "",
             "colgroups" => array(),
-            "empty" => t("No record found!")
+            "empty" => t("No record found!"),
           )
       ) . theme("pager");
   return $output;
 }
 
 /**
- *  Implements hook_validate.
+ * Implements hook_validate().
  */
 function protected_pages_configure_validate($form, &$form_state) {
   $form_state['values']['path'] = drupal_get_normal_path($form_state['values']['path']);
@@ -122,14 +126,14 @@ function protected_pages_configure_validate($form, &$form_state) {
   }
 }
 /**
- *  Ajax submit callback for add protected page form.
+ * Ajax submit callback for add protected page form.
  */
 function protected_pages_configure_submit_callback($form, &$form_state) {
 
   $errors = form_get_errors();
 
-  if (sizeof($errors) < 1) {
-    
+  if (count($errors) < 1) {
+
     db_insert('protected_pages')->fields(array(
       'password' => sha1(trim(check_plain($form_state['values']['password']))),
       'path' => check_plain($form_state['values']['path']),
@@ -190,7 +194,7 @@ function protected_pages_edit($form, &$form_state, $pid) {
 }
 
 /**
- *  Implements hook_validate.
+ * Implements hook_validate().
  */
 function protected_pages_edit_validate($form, &$form_state) {
   $form_state['values']['path'] = drupal_get_normal_path($form_state['values']['path']);
@@ -211,7 +215,7 @@ function protected_pages_edit_validate($form, &$form_state) {
 }
 
 /**
- *  Implements hook_submit.
+ * Implements hook_submit().
  */
 function protected_pages_edit_submit($form, &$form_state) {
 
@@ -239,14 +243,13 @@ function protected_pages_delete_confirm($form, &$form_state, $pid) {
       ->execute()
       ->fetchField();
 
-
   $form['pid'] = array('#type' => 'hidden', '#value' => $pid);
   return confirm_form($form, t('Are you sure you want to delete <b>"%path"</b> from protected pages list?', array('%path' => $path)), 'admin/config/system/protected_pages', t('This action cannot be undone.'), t('Delete'), t('Cancel')
   );
 }
 
 /**
- * Implements hook_submit for delete protected page form.
+ * Implements hook_submit().
  */
 function protected_pages_delete_confirm_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
@@ -269,7 +272,7 @@ function protected_pages_send_email($form, &$form_state, $pid) {
   $form['send_email_box'] = array(
     '#type' => 'fieldset',
     '#title' => t('Send email'),
-    '#description' => t('You send details of this protected page by email to multiple users. Please click ' . l('here', 'admin/config/system/protected_pages/settings', array('query' => $destination)) . ' to configure email settings.'),
+    '#description' => t('You send details of this protected page by email to multiple users. Please click !here to configure email settings.', array('!here' => l(t('here'), 'admin/config/system/protected_pages/settings', array('query' => $destination)))),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
@@ -308,7 +311,7 @@ function protected_pages_send_email($form, &$form_state, $pid) {
 }
 
 /**
- *  Implements hook_validate.
+ * Implements hook_validate().
  */
 function protected_pages_send_email_validate($form, &$form_state) {
   $emails = explode(',', str_replace(array("\r", "\n"), ',', $form_state['values']['recipents']));
@@ -316,7 +319,7 @@ function protected_pages_send_email_validate($form, &$form_state) {
     $email = trim($email);
     if ($email) {
       if (!valid_email_address($email)) {
-        form_error($form['send_email_box']['recipents'], t('Invalid email address: @mail. Please correct this email.', array('@mail' => $email)));        
+        form_error($form['send_email_box']['recipents'], t('Invalid email address: @mail. Please correct this email.', array('@mail' => $email)));
         unset($emails[$key]);
       }
       else {
@@ -326,13 +329,13 @@ function protected_pages_send_email_validate($form, &$form_state) {
     else {      
       unset($emails[$key]);
     }
-  }  
+  }
   $form_state['validated_recipents'] = implode(', ', $emails);
-  
+
 }
 
 /**
- *  Implements hook_submit.
+ * Implements hook_submit().
  */
 function protected_pages_send_email_submit($form, &$form_state) {
   $path = db_select('protected_pages')
@@ -370,11 +373,11 @@ function protected_pages_settings() {
     '#collapsed' => FALSE,
   );
   $global_password_help_text = array();
-  
+
   $global_password_help_text[] = t('Allow per page password = Only per page password will be accepted. Global password will not be accepted.');
   $global_password_help_text[] = t('Allow per page password or Global password = Per page  password and global password both will be accepted.');
   $global_password_help_text[] = t('Allow Only Global = Only global password will be accepted for each protected page.');
-  
+
   $form['protected_pages_password_fieldset']['protected_pages_user_global_password'] = array(
     '#type' => 'select',
     '#title' => t('Global Password Setting'),

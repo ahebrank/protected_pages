@@ -6,8 +6,7 @@
  */
 
 /**
- * Implements hook_schema().
- * 
+ * Implements hook_schema(). 
  */
 function protected_pages_schema() {
   $schema['protected_pages'] = array(
@@ -24,15 +23,15 @@ function protected_pages_schema() {
         'length' => '128',
         'not null' => TRUE,
       ),
-       'path' => array(
+      'path' => array(
         'type' => 'varchar',
         'description' => 'The path of the protected page.',
         'length' => '255',
         'not null' => TRUE,
-      ),      
-    ),
+      ),
+     ),
     'indexes' => array(
-      'path' => array('path'),      
+      'path' => array('path'),
     ),
     'primary key' => array('pid'),
   );

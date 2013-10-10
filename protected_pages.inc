@@ -52,7 +52,7 @@ function protected_pages_enter_password($form, &$form_state) {
 }
 
 /**
- *  Implements hook_validate.
+ * Implements hook_validate().
  */
 function protected_pages_enter_password_validate($form, &$form_state) {
   $password = sha1(trim(check_plain($form_state['values']['password'])));
@@ -91,7 +91,7 @@ function protected_pages_enter_password_validate($form, &$form_state) {
 }
 
 /**
- *  Implements hook_submit.
+ * Implements hook_submit().
  */
 function protected_pages_enter_password_submit($form, &$form_state) {
   $_SESSION['_protected_page']['passwords'][$form_state['values']['protected_page_pid']]['request_time'] = REQUEST_TIME;
