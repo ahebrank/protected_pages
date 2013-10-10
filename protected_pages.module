@@ -191,7 +191,7 @@ function protected_pages_mail($key, &$message, $params) {
     case 'protected_pages_details_mail':
       $tokens = array('[protected-page-url]', '[site-name]');
       $replcements = array(
-        $params['protected_page_url'], check_plain(variable_get('site_name', ''))
+        $params['protected_page_url'], check_plain(variable_get('site_name', '')),
       );
 
       $body = str_replace($tokens, $replcements, $params['body']);

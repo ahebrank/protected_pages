@@ -278,7 +278,7 @@ function protected_pages_send_email($form, &$form_state, $pid) {
       '!here' => l(t('here'), 'admin/config/system/protected_pages/settings', array(
         'query' => $destination,
           )
-      )
+      ),
         )
     ),
     '#collapsible' => TRUE,
