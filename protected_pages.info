@@ -1,1 +1,5 @@
 name = Protected Pages
+description = Allow you to protect pages by secure password.
+core = 7.x
+package = Access
+configure = admin/config/system/protected_pages/settings
