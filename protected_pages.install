@@ -50,6 +50,9 @@ function protected_pages_uninstall() {
   variable_del('protected_pages_description');
   variable_del('protected_pages_password_label');
   variable_del('protected_pages_submit_button_text');
+  variable_del('protected_pages_global_password');
+  variable_del('protected_pages_global_password_field');
+  
 }
 
 /**
