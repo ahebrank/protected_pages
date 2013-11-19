@@ -118,11 +118,11 @@ function protected_pages_access_callback() {
 function protected_pages_init() {
   if (user_access('bypass pages password protection')) {
     return;
-  }  
- 
+  }
+
   $current_path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
   $normal_path = drupal_get_normal_path($current_path);
- 
+
   $pid = protected_pages_is_page_locked($current_path, $normal_path);
   if ($pid) {
     $query = drupal_get_destination();

@@ -79,7 +79,7 @@ function protected_pages_get_pages_list() {
 
   $rows = array();
   $count = 1;
-  foreach ($result as $data) {   
+  foreach ($result as $data) {
     $rows[] = array(
       'data' =>
       array(
@@ -93,17 +93,22 @@ function protected_pages_get_pages_list() {
     $count++;
   }
 
-  $output = theme_table(
-          array(
-            "header" => $header,
-            "rows" => $rows,
-            "attributes" => array('width' => "500"),
-            "sticky" => TRUE,
-            "caption" => "",
-            "colgroups" => array(),
-            "empty" => t("No record found!"),
-          )
-      ) . theme("pager");
+  $output = theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    "attributes" => array('width' => "500"),
+    "sticky" => TRUE,
+    "caption" => "",
+    "colgroups" => array(),
+    "empty" => t("No record found!"),
+      )
+  );
+
+  $output .= theme('pager', array(
+    'tags' => array()
+      )
+  );
+
   return $output;
 }
 
@@ -120,7 +125,7 @@ function protected_pages_configure_validate($form, &$form_state) {
 
   $pid = db_select('protected_pages')
       ->fields('protected_pages', array('pid'))
-      ->condition(db_or()->condition('path', $form_state['normal_path'])->condition('path', $path_alias))      
+      ->condition(db_or()->condition('path', $form_state['normal_path'])->condition('path', $path_alias))
       ->range(0, 1)
       ->execute()
       ->fetchField();
@@ -208,7 +213,7 @@ function protected_pages_edit_validate($form, &$form_state) {
 
   $pid = db_select('protected_pages')
       ->fields('protected_pages', array('pid'))
-      ->condition(db_or()->condition('path', $form_state['normal_path'])->condition('path', $form_state['values']['path']))    
+      ->condition(db_or()->condition('path', $form_state['normal_path'])->condition('path', $form_state['values']['path']))
       ->condition('pid', $form_state['values']['pid'], '<>')
       ->range(0, 1)
       ->execute()
