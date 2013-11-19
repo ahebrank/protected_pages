@@ -20,6 +20,10 @@ function protected_pages_permission() {
       'title' => t('access protected page password screen'),
       'description' => t('Access protected page password screen.'),
     ),
+    'administer protected pages configuration' => array(
+      'title' => t('access protected pages configuration screen'),
+      'description' => t('Access protected pages configuration screen.'),
+    ),
   );
 }
 
@@ -34,7 +38,7 @@ function protected_pages_menu() {
     'description' => 'Configure protected pages setting.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('protected_pages_configure'),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer protected pages configuration'),
     'file' => 'protected_pages.admin.inc',
   );
   $items['admin/config/system/protected_pages/list'] = array(
@@ -45,7 +49,7 @@ function protected_pages_menu() {
     'title' => 'Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('protected_pages_settings'),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer protected pages configuration'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'protected_pages.admin.inc',
   );
@@ -54,7 +58,7 @@ function protected_pages_menu() {
     'title' => 'Edit Protected Pages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('protected_pages_edit', 4),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer protected pages configuration'),
     'file' => 'protected_pages.admin.inc',
   );
 
@@ -62,7 +66,7 @@ function protected_pages_menu() {
     'title' => 'Delete Protected Pages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('protected_pages_delete_confirm', 4),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer protected pages configuration'),
     'type' => MENU_CALLBACK,
     'file' => 'protected_pages.admin.inc',
   );
@@ -71,7 +75,7 @@ function protected_pages_menu() {
     'title' => 'Send protected pages details to user by email',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('protected_pages_send_email', 4),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('administer protected pages configuration'),
     'file' => 'protected_pages.admin.inc',
   );
 
@@ -114,9 +118,11 @@ function protected_pages_access_callback() {
 function protected_pages_init() {
   if (user_access('bypass pages password protection')) {
     return;
-  }
-  $current_path = current_path();
+  }  
+ 
+  $current_path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
   $normal_path = drupal_get_normal_path($current_path);
+ 
   $pid = protected_pages_is_page_locked($current_path, $normal_path);
   if ($pid) {
     $query = drupal_get_destination();

@@ -79,7 +79,7 @@ function protected_pages_get_pages_list() {
 
   $rows = array();
   $count = 1;
-  foreach ($result as $data) {
+  foreach ($result as $data) {   
     $rows[] = array(
       'data' =>
       array(
@@ -111,14 +111,16 @@ function protected_pages_get_pages_list() {
  * Implements hook_validate().
  */
 function protected_pages_configure_validate($form, &$form_state) {
-  $form_state['values']['path'] = drupal_get_normal_path($form_state['values']['path']);
-  if (!drupal_valid_path($form_state['values']['path'])) {
+
+  $form_state['normal_path'] = drupal_get_normal_path($form_state['values']['path']);
+  $path_alias = drupal_strtolower(drupal_get_path_alias($form_state['values']['path']));
+  if (!drupal_valid_path($form_state['normal_path'])) {
     form_set_error('path', t('Please enter a correct path!'));
   }
 
   $pid = db_select('protected_pages')
       ->fields('protected_pages', array('pid'))
-      ->condition('path', $form_state['values']['path'])
+      ->condition(db_or()->condition('path', $form_state['normal_path'])->condition('path', $path_alias))      
       ->range(0, 1)
       ->execute()
       ->fetchField();
@@ -199,14 +201,14 @@ function protected_pages_edit($form, &$form_state, $pid) {
  * Implements hook_validate().
  */
 function protected_pages_edit_validate($form, &$form_state) {
-  $form_state['values']['path'] = drupal_get_normal_path($form_state['values']['path']);
-  if (!drupal_valid_path($form_state['values']['path'])) {
+  $form_state['normal_path'] = drupal_get_normal_path($form_state['values']['path']);
+  if (!drupal_valid_path($form_state['normal_path'])) {
     form_set_error('path', t('Please enter a correct path!'));
   }
 
   $pid = db_select('protected_pages')
       ->fields('protected_pages', array('pid'))
-      ->condition('path', $form_state['values']['path'])
+      ->condition(db_or()->condition('path', $form_state['normal_path'])->condition('path', $form_state['values']['path']))    
       ->condition('pid', $form_state['values']['pid'], '<>')
       ->range(0, 1)
       ->execute()
@@ -409,7 +411,7 @@ function protected_pages_settings() {
     '#type' => 'textfield',
     '#title' => t('Session Expire Time'),
     '#description' => t('When user enters password a session is created. 
-      The node will be accessible untill session expire. Once session expires, 
+      The node will be accessible until session expire. Once session expires, 
       user will need to enter password again. The default session expire time 
       is 0 (unlimited).'),
     '#default_value' => variable_get('protected_pages_session_expire_time', 0),
@@ -476,6 +478,12 @@ function protected_pages_settings() {
     '#title' => t('Submit Button Text'),
     '#default_value' => variable_get('protected_pages_submit_button_text', t('Authenticate')),
     '#description' => t('Enter the text for the submit button of enter password form.'),
+  );
+  $form['protected_pages_other_fieldset']['protected_pages_incorrect_password_msg'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Incorrect Password Error Text'),
+    '#default_value' => variable_get('protected_pages_incorrect_password_msg', t('Incorrect password!')),
+    '#description' => t('This error text will appear if someone enters wrong password in "Enter password screen".'),
   );
   $form['#submit'][] = '_protected_pages_settings_submit';
   return system_settings_form($form);

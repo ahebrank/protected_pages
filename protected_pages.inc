@@ -66,7 +66,7 @@ function protected_pages_enter_password_validate($form, &$form_state) {
         ->fetchField();
     if (!$pid) {
 
-      form_set_error('password', t('Incorrect password!'));
+      form_set_error('password', variable_get('protected_pages_incorrect_password_msg', t('Incorrect password!')));
     }
   }
   elseif ($global_password_setting == 'per_page_or_global') {
@@ -79,13 +79,13 @@ function protected_pages_enter_password_validate($form, &$form_state) {
 
     $global_password = variable_get('protected_pages_global_password', '');
     if (!$pid && $global_password != $password) {
-      form_set_error('password', t('Incorrect password!'));
+      form_set_error('password', variable_get('protected_pages_incorrect_password_msg', t('Incorrect password!')));
     }
   }
   else {
     $global_password = variable_get('protected_pages_global_password', '');
     if ($global_password != $password) {
-      form_set_error('password', t('Incorrect password!'));
+      form_set_error('password', variable_get('protected_pages_incorrect_password_msg', t('Incorrect password!')));
     }
   }
 }
