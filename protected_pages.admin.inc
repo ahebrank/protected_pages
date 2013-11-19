@@ -105,7 +105,7 @@ function protected_pages_get_pages_list() {
   );
 
   $output .= theme('pager', array(
-    'tags' => array()
+    'tags' => array(),
       )
   );
 
