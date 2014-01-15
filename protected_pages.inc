@@ -61,6 +61,7 @@ function protected_pages_enter_password_validate($form, &$form_state) {
     $pid = db_select('protected_pages')
         ->fields('protected_pages', array('pid'))
         ->condition('password', $password)
+        ->condition('pid', $form_state['values']['protected_page_pid'])
         ->range(0, 1)
         ->execute()
         ->fetchField();
@@ -73,6 +74,7 @@ function protected_pages_enter_password_validate($form, &$form_state) {
     $pid = db_select('protected_pages')
         ->fields('protected_pages', array('pid'))
         ->condition('password', $password)
+        ->condition('pid', $form_state['values']['protected_page_pid'])
         ->range(0, 1)
         ->execute()
         ->fetchField();
