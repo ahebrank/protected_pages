@@ -132,23 +132,6 @@ function protected_pages_init() {
     $query['protected_page'] = $pid;
     drupal_goto('protected-page', array('query' => $query));
   }
-  else {
-    $page_node = menu_get_object();
-    if (isset($page_node->nid) && is_numeric($page_node->nid)) {
-      $path_to_node = 'node/' . $page_node->nid;
-      $current_path = drupal_strtolower(drupal_get_path_alias($path_to_node));
-      $normal_path = drupal_get_normal_path($current_path);
-      $pid = protected_pages_is_page_locked($current_path, $normal_path);
-      if ($pid) {
-        $query = drupal_get_destination();
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-          $query['back'] = urlencode($current_path);
-        }
-        $query['protected_page'] = $pid;
-        drupal_goto('protected-page', array('query' => $query));
-      }
-    }
-  }
 }
 
 /**
