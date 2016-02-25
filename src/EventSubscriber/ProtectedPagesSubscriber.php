@@ -61,7 +61,8 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
                     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
                     if ($pid) {
                         $query = \Drupal\Core\Routing::getDestinationArray();
-                        if (!empty(\Drupal::request()->server->get('HTTP_REFERER'))) {
+                        $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
+                        if (!empty($http_referer)) {
                             $query['back'] = urlencode($current_path);
                         }
                         $query['protected_page'] = $pid;
