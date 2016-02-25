@@ -2,8 +2,10 @@
 
 /**
  * @file
- * This module allows you to protect any page of your website by secure
- * password. You can enter urls of pages to protect and set password per page.
+ * This module allows you to protect any page of your website by secure password.
+ *
+ * You can enter urls of pages to protect and set password per page.
+ *
  * Admin (uid = 1) or user with bypass protection permission can view page.
  */
 
@@ -33,4 +35,3 @@ function protected_pages_mail($key, &$message, $params) {
       break;
   }
 }
-
