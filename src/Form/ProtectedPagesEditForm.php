@@ -143,9 +143,9 @@ class ProtectedPagesEditForm extends FormBase {
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
         $page_data = array();
-
-        if (!empty($form_state->getValue('password'))) {
-            $page_data['password'] = $this->password->hash(Html::escape($form_state->getValue('password')));
+        $password = $form_state->getValue('password');
+        if (!empty($password)) {
+            $page_data['password'] = $this->password->hash(Html::escape($password));
 
         }
         $page_data['path'] = Html::escape($form_state->getValue('path'));
