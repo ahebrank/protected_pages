@@ -2,7 +2,8 @@
 
 /**
  * @file
- * This module allows you to protect any page of your website by secure password.
+ * This module allows you to protect any page of your website by secure
+ * password.
  *
  * You can enter urls of pages to protect and set password per page.
  *
