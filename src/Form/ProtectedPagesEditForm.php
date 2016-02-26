@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\protected_pages\Form\ProtectedPagesEditForm.
  */
+
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -68,6 +69,7 @@ class ProtectedPagesEditForm extends FormBase {
 
   /**
    * {@inheritdoc}
+   * 
    * @param int $pid
    *   The ID of the protected page.
    */
@@ -78,7 +80,7 @@ class ProtectedPagesEditForm extends FormBase {
       'field' => 'pid',
       'value' => $pid,
       '=',
-      'operator' => '='
+      'operator' => '=',
     );
 
     $path = ProtectedPagesStorage::load($fields, $conditions, TRUE);
@@ -111,7 +113,6 @@ class ProtectedPagesEditForm extends FormBase {
       '#value' => $this->t('Save'),
     );
 
-
     return $form;
   }
 
@@ -137,17 +138,17 @@ class ProtectedPagesEditForm extends FormBase {
       $conditions['or'][] = array(
         'field' => 'path',
         'value' => $normal_path,
-        'operator' => '='
+        'operator' => '=',
       );
       $conditions['or'][] = array(
         'field' => 'path',
         'value' => $path_alias,
-        'operator' => '='
+        'operator' => '=',
       );
       $conditions['and'][] = array(
         'field' => 'pid',
         'value' => $form_state->getValue('pid'),
-        'operator' => '<>'
+        'operator' => '<>',
       );
 
       $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
