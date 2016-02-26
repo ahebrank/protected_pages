@@ -24,7 +24,7 @@ class ProtectedPagesStorage {
    * @return int $pid
    *   The protected page id.
    */
-  public static function insertProtectedPage($page_data = array()) {
+  public static function insertProtectedPage(array $page_data) {
     $db = \Drupal::database();
     $query = $db->insert('protected_pages')
       ->fields(array('password', 'path'))
@@ -42,7 +42,7 @@ class ProtectedPagesStorage {
    * @param int $pid
    *   The protected page id.
    */
-  public static function updateProtectedPage($page_data = array(), $pid) {
+  public static function updateProtectedPage(array $page_data, $pid) {
     $db = \Drupal::database();
     $db->update('protected_pages')
       ->fields($page_data)
