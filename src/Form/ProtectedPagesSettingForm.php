@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\protected_pages\Form\ProtectedPagesSettingForm.
  */
+
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -79,10 +80,7 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.mail'),
-      $container->get('email.validator'),
-      $container->get('renderer'),
-      $container->get('password')
+        $container->get('plugin.manager.mail'), $container->get('email.validator'), $container->get('renderer'), $container->get('password')
     );
   }
 
