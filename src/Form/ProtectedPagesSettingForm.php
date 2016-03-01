@@ -128,7 +128,6 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#type' => 'select',
       '#title' => t('Global Password Setting'),
       '#default_value' => $config->get('password.per_page_or_global'),
-      //variable_get('protected_pages_user_global_password', 'per_page_or_global'),
       '#options' => array(
         'per_page_password' => $this->t('Allow per page password'),
         'per_page_or_global' => $this->t('Allow per page password or Global password'),
@@ -153,14 +152,13 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       user will need to enter password again. The default session expire time
       is 0 (unlimited).'),
       '#default_value' => $config->get('password.protected_pages_session_expire_time'),
-      //variable_get('protected_pages_session_expire_time', 0),
       '#required' => TRUE,
       '#size' => 10,
       '#element_validate' => array(
         array(
           $this,
-          'protectedPagesValidateIntegerPositive'
-        )
+          'protectedPagesValidateIntegerPositive',
+        ),
       ),
       '#field_suffix' => $this->t('in minutes'),
     );
@@ -176,7 +174,6 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Email subject'),
       '#default_value' => $config->get('email.subject'),
-      //variable_get('protected_pages_email_subject', protected_pages_email_subject()),
       '#description' => $this->t('Enter the subject of the email.'),
     );
 
@@ -185,7 +182,6 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#title' => $this->t('Email content'),
       '#rows' => 15,
       '#default_value' => $config->get('email.body'),
-      //variable_get('protected_pages_email_body', protected_pages_email_body()),
       '#description' => $this->t('Enter the body of the email. Only [protected-page-url] and [site-name] tokens are available.
       Since password is encrypted, therefore we can not provide it by token.'),
     );
@@ -201,7 +197,6 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Password page title'),
       '#default_value' => $config->get('others.protected_pages_title'),
-      //variable_get('protected_pages_title', t('Protected Page -- Enter password')),
       '#description' => $this->t('Enter the title of the protected page.'),
     );
 
@@ -209,7 +204,6 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Password page description (inside the field set)'),
       '#default_value' => $config->get('others.protected_pages_description'),
-      //variable_get('protected_pages_description', t('The page you are trying to view is password protected. Please enter the password below to proceed.')),
       '#description' => $this->t('Enter specific description for the protected page. This description is displayed inside the fieldset. HTML is accepted.'),
     );
 
@@ -217,21 +211,18 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Password field label'),
       '#default_value' => $config->get('others.protected_pages_password_label'),
-      //variable_get('protected_pages_password_label', t('Enter Password')),
       '#description' => $this->t('Enter the text for the password field label.'),
     );
     $form['protected_pages_other_fieldset']['protected_pages_submit_button_text'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Submit Button Text'),
       '#default_value' => $config->get('others.protected_pages_submit_button_text'),
-      //variable_get('protected_pages_submit_button_text', t('Authenticate')),
       '#description' => $this->t('Enter the text for the submit button of enter password form.'),
     );
     $form['protected_pages_other_fieldset']['protected_pages_incorrect_password_msg'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Incorrect Password Error Text'),
       '#default_value' => $config->get('others.protected_pages_incorrect_password_msg'),
-      //variable_get('protected_pages_incorrect_password_msg', t('Incorrect password!')),
       '#description' => $this->t('This error text will appear if someone enters wrong password in "Enter password screen".'),
     );
 

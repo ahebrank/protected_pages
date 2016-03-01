@@ -95,7 +95,6 @@ class ProtectedPagesAddForm extends FormBase {
       '#value' => $this->t('Save'),
     );
 
-
     return $form;
   }
 
@@ -121,12 +120,12 @@ class ProtectedPagesAddForm extends FormBase {
       $conditions['or'][] = array(
         'field' => 'path',
         'value' => $normal_path,
-        'operator' => '='
+        'operator' => '=',
       );
       $conditions['or'][] = array(
         'field' => 'path',
         'value' => $path_alias,
-        'operator' => '='
+        'operator' => '=',
       );
 
       $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);

@@ -127,7 +127,7 @@ class ProtectedPagesLoginForm extends FormBase {
       $conditions['general'][] = array(
         'field' => 'pid',
         'value' => $form_state->getValue('protected_page_pid'),
-        'operator' => '='
+        'operator' => '=',
       );
 
       $password = ProtectedPagesStorage::load($fields, $conditions, TRUE);
@@ -143,7 +143,7 @@ class ProtectedPagesLoginForm extends FormBase {
       $conditions['general'][] = array(
         'field' => 'pid',
         'value' => $form_state->getValue('protected_page_pid'),
-        'operator' => '='
+        'operator' => '=',
       );
 
       $password = ProtectedPagesStorage::load($fields, $conditions, TRUE);

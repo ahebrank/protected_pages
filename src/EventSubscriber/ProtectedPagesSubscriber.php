@@ -18,16 +18,16 @@ use Drupal\Core\Routing;
 use Drupal\Core\Routing\RedirectDestinationTrait;
 
 /**
- * Redirects user to protected page login screen if current page is password protected.
+ * Redirects user to protected page login screen.
  */
 class ProtectedPagesSubscriber implements EventSubscriberInterface {
 
   use RedirectDestinationTrait;
 
   /**
-   * Redirects user to protected page login screen if current page is password protected.
+   * Redirects user to protected page login screen.
    *
-   * @param \Symfony\Component\HttpKernel\Event\PostResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
    *   The event to process.
    */
   public function checkProtectedPage(FilterResponseEvent $event) {
@@ -85,7 +85,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
+  public static function getSubscribedEvents() {
     $events[KernelEvents::RESPONSE][] = array('checkProtectedPage');
     return $events;
   }
@@ -107,12 +107,12 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
     $conditions['or'][] = array(
       'field' => 'path',
       'value' => $normal_path,
-      'operator' => '='
+      'operator' => '=',
     );
     $conditions['or'][] = array(
       'field' => 'path',
       'value' => $current_path,
-      'operator' => '='
+      'operator' => '=',
     );
 
     $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);

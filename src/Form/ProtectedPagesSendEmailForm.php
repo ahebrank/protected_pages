@@ -115,10 +115,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $emails = explode(',', str_replace(array(
-      "\r",
-      "\n"
-            ), ',', $form_state->getValue('recipents')));
+    $emails = explode(',', str_replace(array("\r", "\n"), ',', $form_state->getValue('recipents')));
     foreach ($emails as $key => $email) {
       $email = trim($email);
       if ($email) {
@@ -148,7 +145,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
       'field' => 'pid',
       'value' => $form_state->get('pid'),
       '=',
-      'operator' => '='
+      'operator' => '=',
     );
 
     $path = ProtectedPagesStorage::load($fields, $conditions, TRUE);
