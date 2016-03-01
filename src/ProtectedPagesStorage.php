@@ -14,7 +14,6 @@ use Drupal\Core\Database\Query\Condition;
  */
 class ProtectedPagesStorage {
 
-
   /**
    * Insert data into protected pages table.
    *
@@ -27,11 +26,10 @@ class ProtectedPagesStorage {
   public static function insertProtectedPage(array $page_data) {
     $db = \Drupal::database();
     $query = $db->insert('protected_pages')
-      ->fields(array('password', 'path'))
-      ->values($page_data);
+        ->fields(array('password', 'path'))
+        ->values($page_data);
     $pid = $query->execute();
     return $pid;
-
   }
 
   /**
@@ -45,10 +43,9 @@ class ProtectedPagesStorage {
   public static function updateProtectedPage(array $page_data, $pid) {
     $db = \Drupal::database();
     $db->update('protected_pages')
-      ->fields($page_data)
-      ->condition('pid', $pid)
-      ->execute();
-
+        ->fields($page_data)
+        ->condition('pid', $pid)
+        ->execute();
   }
 
   /**
@@ -60,9 +57,8 @@ class ProtectedPagesStorage {
   public static function deletePage($pid) {
     $db = \Drupal::database();
     $db->delete('protected_pages')
-      ->condition('pid', $pid)
-      ->execute();
-
+        ->condition('pid', $pid)
+        ->execute();
   }
 
   /**
@@ -99,14 +95,12 @@ class ProtectedPagesStorage {
         foreach ($query_conditions['and'] as $condition) {
           $select->condition($condition['field'], $condition['value'], $condition['operator']);
         }
-
       }
       if (isset($query_conditions['general']) && count($query_conditions['general'])) {
 
         foreach ($query_conditions['general'] as $condition) {
           $select->condition($condition['field'], $condition['value'], $condition['operator']);
         }
-
       }
     }
 
@@ -116,7 +110,6 @@ class ProtectedPagesStorage {
     }
     else {
       $result = $select->execute()->fetchAll();
-
     }
 
     return $result;

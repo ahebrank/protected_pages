@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\protected_pages\Form\ProtectedPagesLoginForm.
  */
+
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -35,7 +36,6 @@ class ProtectedPagesLoginForm extends FormBase {
   public function __construct(PasswordInterface $password) {
 
     $this->password = $password;
-
   }
 
   /**
@@ -43,7 +43,7 @@ class ProtectedPagesLoginForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('password')
+        $container->get('password')
     );
   }
 
@@ -93,7 +93,6 @@ class ProtectedPagesLoginForm extends FormBase {
 
     $form['protected_page_enter_password']['protected_page_pid'] = array(
       '#markup' => '<div class="protected_pages_description"><strong>' . $config->get('others.protected_pages_description') . '</strong></div>',
-
     );
     $form['protected_page_enter_password']['password'] = array(
       '#type' => 'password',

@@ -36,9 +36,9 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
       return;
     }
     $current_path = \Drupal::service('path.alias_manager')
-      ->getAliasByPath(\Drupal::service('path.current')->getPath());
+        ->getAliasByPath(\Drupal::service('path.current')->getPath());
     $normal_path = Unicode::strtolower(\Drupal::service('path.alias_manager')
-      ->getPathByAlias($current_path));
+                ->getPathByAlias($current_path));
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
     if ($pid) {
@@ -49,10 +49,9 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
       }
       $query['protected_page'] = $pid;
       $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
-        ->toString());
+              ->toString());
       $response->send();
       return;
-
     }
     else {
       $page_node = \Drupal::request()->attributes->get('node');
@@ -61,9 +60,9 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
         if (isset($nid) && is_numeric($nid)) {
           $path_to_node = '/node/' . $nid;
           $current_path = Unicode::strtolower(\Drupal::service('path.alias_manager')
-            ->getAliasByPath($path_to_node));
+                      ->getAliasByPath($path_to_node));
           $normal_path = Unicode::strtolower(\Drupal::service('path.alias_manager')
-            ->getPathByAlias($current_path));
+                      ->getPathByAlias($current_path));
           $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
           if ($pid) {
             $query = \Drupal\Core\Routing::getDestinationArray();
@@ -74,13 +73,12 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
             $query['protected_page'] = $pid;
 
             $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
-              ->toString());
+                    ->toString());
             $response->send();
             return;
           }
         }
       }
-
     }
   }
 

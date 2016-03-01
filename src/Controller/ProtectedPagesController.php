@@ -41,7 +41,7 @@ class ProtectedPagesController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('renderer')
+        $container->get('renderer')
     );
   }
 
@@ -64,20 +64,20 @@ class ProtectedPagesController extends ControllerBase {
         array(
           '#type' => 'dropbutton',
           '#links' =>
-            array(
-              'edit-protected-page' => array(
-                'title' => $this->t('Edit'),
-                'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/edit')
-              ),
-              'delete-protected-page' => array(
-                'title' => $this->t('Delete'),
-                'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/delete')
-              ),
-              'send-email' => array(
-                'title' => $this->t('Send E-mail'),
-                'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/send_email')
-              )
+          array(
+            'edit-protected-page' => array(
+              'title' => $this->t('Edit'),
+              'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/edit')
+            ),
+            'delete-protected-page' => array(
+              'title' => $this->t('Delete'),
+              'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/delete')
+            ),
+            'send-email' => array(
+              'title' => $this->t('Send E-mail'),
+              'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/send_email')
             )
+          )
         )
       );
 
@@ -85,11 +85,11 @@ class ProtectedPagesController extends ControllerBase {
       $operations = $this->renderer->render($operation_drop_button);
       $rows[] = array(
         'data' =>
-          array(
-            $count,
-            Html::escape($page->path),
-            $operations,
-          ),
+        array(
+          $count,
+          Html::escape($page->path),
+          $operations,
+        ),
       );
       $count++;
     }

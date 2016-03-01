@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\protected_pages\Form\ProtectedPagesSendEmailForm.
  */
+
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -51,8 +52,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.mail'),
-      $container->get('email.validator')
+        $container->get('plugin.manager.mail'), $container->get('email.validator')
     );
   }
 
@@ -72,11 +72,10 @@ class ProtectedPagesSendEmailForm extends FormBase {
     $form['send_email_box'] = array(
       '#type' => 'details',
       '#title' => $this->t('Send email'),
-      '#description' => $this->t('You send details of this protected page by email to multiple users. Please click <a href="@here">here</a> to configure email settings.',
-        [
-          '@here' => Url::fromUri('internal:/admin/config/system/protected_pages/settings', array('query' => $this->getDestinationArray()))
+      '#description' => $this->t('You send details of this protected page by email to multiple users. Please click <a href="@here">here</a> to configure email settings.', [
+        '@here' => Url::fromUri('internal:/admin/config/system/protected_pages/settings', array('query' => $this->getDestinationArray()))
             ->toString()
-        ]),
+      ]),
       '#open' => TRUE,
     );
 
@@ -119,7 +118,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
     $emails = explode(',', str_replace(array(
       "\r",
       "\n"
-    ), ',', $form_state->getValue('recipents')));
+            ), ',', $form_state->getValue('recipents')));
     foreach ($emails as $key => $email) {
       $email = trim($email);
       if ($email) {
@@ -136,7 +135,6 @@ class ProtectedPagesSendEmailForm extends FormBase {
       }
     }
     $form_state->set('validated_recipents', implode(', ', $emails));
-
   }
 
   /**
@@ -164,13 +162,12 @@ class ProtectedPagesSendEmailForm extends FormBase {
     $params['subject'] = $form_state->getValue('subject');
     $params['body'] = $form_state->getValue('body');
     $params['protected_page_url'] = Url::fromUri('internal:' . $path, ['absolute' => TRUE])
-      ->toString();
+        ->toString();
     $result = $this->mailManager->mail($module, $key, $to, $language_code, $params, $from, $send);
     if ($result['result'] !== TRUE) {
       $message = $this->t('There was a problem sending your email notification to @email.', array('@email' => $to));
       drupal_set_message($message, 'error');
       \Drupal::logger('protected_pages')->error($message);
-
     }
     else {
       $message = t('The Email has been sent to @email.', array('@email' => $to));

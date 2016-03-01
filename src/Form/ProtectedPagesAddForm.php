@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\protected_pages\Form\ProtectedPagesAddForm.
  */
+
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -15,11 +16,11 @@ use Drupal\protected_pages\ProtectedPagesStorage;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Password\PasswordInterface;
 
-
 /**
  * Provides an add protected page form.
  */
 class ProtectedPagesAddForm extends FormBase {
+
   /**
    * The path validator.
    *
@@ -46,7 +47,6 @@ class ProtectedPagesAddForm extends FormBase {
 
     $this->pathValidator = $path_validator;
     $this->password = $password;
-
   }
 
   /**
@@ -54,8 +54,7 @@ class ProtectedPagesAddForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('path.validator'),
-      $container->get('password')
+        $container->get('path.validator'), $container->get('password')
     );
   }
 
@@ -111,9 +110,9 @@ class ProtectedPagesAddForm extends FormBase {
     }
     else {
       $normal_path = \Drupal::service('path.alias_manager')
-        ->getPathByAlias($form_state->getValue('path'));
+          ->getPathByAlias($form_state->getValue('path'));
       $path_alias = Unicode::strtolower(\Drupal::service('path.alias_manager')
-        ->getAliasByPath($form_state->getValue('path')));
+                  ->getAliasByPath($form_state->getValue('path')));
       if (!$this->pathValidator->isValid($normal_path)) {
         $form_state->setErrorByName('path', $this->t('Please enter a correct path!'));
       }
@@ -133,7 +132,6 @@ class ProtectedPagesAddForm extends FormBase {
       $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
       if ($pid) {
         $form_state->setErrorByName('path', $this->t('Duplicate path entry is not allowed. There is already a path or its alias exists.'));
-
       }
     }
   }
@@ -146,7 +144,6 @@ class ProtectedPagesAddForm extends FormBase {
     $page_data = array(
       'password' => $this->password->hash(Html::escape($form_state->getValue('password'))),
       'path' => Html::escape($form_state->getValue('path')),
-
     );
     $pid = ProtectedPagesStorage::insertProtectedPage($page_data);
     if ($pid) {
