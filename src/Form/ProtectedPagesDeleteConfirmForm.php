@@ -4,6 +4,7 @@
  * @file
  * Contains \Drupal\protected_pages\Form\ProtectedPagesDeleteConfirmForm.
  */
+
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\ConfirmFormBase;
@@ -11,10 +12,13 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\protected_pages\ProtectedPagesStorage;
 
+/**
+ * Provides delete protected page confirm form.
+ */
 class ProtectedPagesDeleteConfirmForm extends ConfirmFormBase {
 
   /**
-   * The protected page id
+   * The protected page id.
    *
    * @var int
    */
@@ -82,4 +86,3 @@ class ProtectedPagesDeleteConfirmForm extends ConfirmFormBase {
   }
 
 }
-

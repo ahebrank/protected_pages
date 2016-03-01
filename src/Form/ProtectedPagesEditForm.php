@@ -16,11 +16,11 @@ use Drupal\protected_pages\ProtectedPagesStorage;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Password\PasswordInterface;
 
-
 /**
  * Provides an edit protected page form.
  */
 class ProtectedPagesEditForm extends FormBase {
+
   /**
    * The path validator.
    *
@@ -47,7 +47,6 @@ class ProtectedPagesEditForm extends FormBase {
 
     $this->pathValidator = $path_validator;
     $this->password = $password;
-
   }
 
   /**
@@ -55,8 +54,7 @@ class ProtectedPagesEditForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('path.validator'),
-      $container->get('password')
+        $container->get('path.validator'), $container->get('password')
     );
   }
 
@@ -69,7 +67,7 @@ class ProtectedPagesEditForm extends FormBase {
 
   /**
    * {@inheritdoc}
-   * 
+   *
    * @param int $pid
    *   The ID of the protected page.
    */
@@ -127,9 +125,9 @@ class ProtectedPagesEditForm extends FormBase {
     }
     else {
       $normal_path = \Drupal::service('path.alias_manager')
-        ->getPathByAlias($form_state->getValue('path'));
+          ->getPathByAlias($form_state->getValue('path'));
       $path_alias = Unicode::strtolower(\Drupal::service('path.alias_manager')
-        ->getAliasByPath($form_state->getValue('path')));
+                  ->getAliasByPath($form_state->getValue('path')));
       if (!$this->pathValidator->isValid($normal_path)) {
         $form_state->setErrorByName('path', $this->t('Please enter a correct path!'));
       }
@@ -154,7 +152,6 @@ class ProtectedPagesEditForm extends FormBase {
       $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
       if ($pid) {
         $form_state->setErrorByName('path', $this->t('Duplicate path entry is not allowed. There is already a path or its alias exists.'));
-
       }
     }
   }
@@ -167,7 +164,6 @@ class ProtectedPagesEditForm extends FormBase {
     $password = $form_state->getValue('password');
     if (!empty($password)) {
       $page_data['password'] = $this->password->hash(Html::escape($password));
-
     }
     $page_data['path'] = Html::escape($form_state->getValue('path'));
 
