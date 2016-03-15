@@ -74,7 +74,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
       '#title' => $this->t('Send email'),
       '#description' => $this->t('You send details of this protected page by email to multiple users. Please click <a href="@here">here</a> to configure email settings.', [
         '@here' => Url::fromUri('internal:/admin/config/system/protected_pages/settings', array('query' => $this->getDestinationArray()))
-            ->toString()
+            ->toString(),
       ]),
       '#open' => TRUE,
     );
@@ -144,7 +144,6 @@ class ProtectedPagesSendEmailForm extends FormBase {
     $conditions['general'][] = array(
       'field' => 'pid',
       'value' => $form_state->get('pid'),
-      '=',
       'operator' => '=',
     );
 

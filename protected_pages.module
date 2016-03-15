@@ -8,6 +8,7 @@
  *
  * Admin (uid = 1) or user with bypass protection permission can view page.
  */
+
 use Drupal\Component\Utility\Html;
 use Drupal\protected_pages\ProtectedPagesStorage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -48,7 +49,6 @@ function protected_pages_file_download($uri) {
   }
 
   $target = file_uri_target($uri);
-  //echo $target;exit;
   $file_path = '/system/files/' . $target;
 
   $fields = array('pid');
@@ -58,7 +58,7 @@ function protected_pages_file_download($uri) {
     'value' => $file_path,
     'operator' => '=',
   );
- 
+
   $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
 
   if (isset($_SESSION['_protected_page']['passwords'][$pid]['expire_time'])) {

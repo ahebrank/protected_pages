@@ -99,7 +99,7 @@ class ProtectedPagesController extends ControllerBase {
       '#empty' => t('No records available.'),
     );
     $content['pager'] = array('#type' => 'pager');
-   
+
     // Don't cache this page.
     $content['#cache']['max-age'] = 0;
 

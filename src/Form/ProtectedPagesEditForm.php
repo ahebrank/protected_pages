@@ -77,7 +77,6 @@ class ProtectedPagesEditForm extends FormBase {
     $conditions['general'][] = array(
       'field' => 'pid',
       'value' => $pid,
-      '=',
       'operator' => '=',
     );
 

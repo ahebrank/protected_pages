@@ -114,7 +114,7 @@ class ProtectedPagesStorage {
 
     return $result;
   }
-  
+ 
   /**
    * Fetches all protected pages records from database.
    */
@@ -128,10 +128,9 @@ class ProtectedPagesStorage {
     ->limit(20)
     ->execute()
     ->fetchAll();
-    
-   
+
     return $results;
-      
+
   }
 
 }

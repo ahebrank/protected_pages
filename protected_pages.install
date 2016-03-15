@@ -49,6 +49,6 @@ function protected_pages_install() {
     Visit the <a href="@permissions">permissions</a> for your site.',
     [
       '@permissions' => Url::fromUri('internal:/admin/people/permissions', array('fragment' => 'module-protected_pages'))
-        ->toString()
+        ->toString(),
     ]), 'status');
 }
