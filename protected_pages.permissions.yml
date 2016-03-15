@@ -1,12 +1,11 @@
 'bypass pages password protection':
   title: Bypass pages password protection
-  description: Bypass password protection of protected pages
+  description: Bypass password protection of protected pages.
   restrict access: TRUE
 
 'access protected page password screen':
   title: Access protected page password screen
-  description: Access protected page password screen.
-  restrict access: TRUE
+  description: This permission provides access to protected page login screen.
 
 'administer protected pages configuration':
   title: Access protected pages configuration screen

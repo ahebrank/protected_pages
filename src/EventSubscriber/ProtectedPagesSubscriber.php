@@ -14,15 +14,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Drupal\Component\Utility\Unicode;
 use Drupal\protected_pages\ProtectedPagesStorage;
 use Drupal\Core\Url;
-use Drupal\Core\Routing;
-use Drupal\Core\Routing\RedirectDestinationTrait;
 
 /**
  * Redirects user to protected page login screen.
  */
 class ProtectedPagesSubscriber implements EventSubscriberInterface {
-
-  use RedirectDestinationTrait;
 
   /**
    * Redirects user to protected page login screen.
@@ -42,7 +38,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
     if ($pid) {
-      $query = $this->getDestinationArray();
+      $query = \Drupal::destination()->getAsArray();
       $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
       if (!empty($http_referer)) {
         $query['back'] = urlencode($current_path);
@@ -65,7 +61,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
                       ->getPathByAlias($current_path));
           $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
           if ($pid) {
-            $query = \Drupal\Core\Routing::getDestinationArray();
+            $query = \Drupal::destination()->getAsArray();
             $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
             if (!empty($http_referer)) {
               $query['back'] = urlencode($current_path);

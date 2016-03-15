@@ -148,6 +148,7 @@ class ProtectedPagesAddForm extends FormBase {
     if ($pid) {
       drupal_set_message($this->t('The protected page settings has been successfully saved.'));
     }
+    drupal_flush_all_caches();
     $form_state->setRedirect('protected_pages_list');
   }
 

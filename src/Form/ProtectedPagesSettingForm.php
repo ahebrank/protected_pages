@@ -160,7 +160,7 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
           'protectedPagesValidateIntegerPositive',
         ),
       ),
-      '#field_suffix' => $this->t('in minutes'),
+      '#field_suffix' => $this->t('minutes'),
     );
 
     $form['protected_pages_email_fieldset'] = array(

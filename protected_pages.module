@@ -8,8 +8,10 @@
  *
  * Admin (uid = 1) or user with bypass protection permission can view page.
  */
-
 use Drupal\Component\Utility\Html;
+use Drupal\protected_pages\ProtectedPagesStorage;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\Core\Url;
 
 /**
  * Implements hook_mail().
@@ -33,5 +35,56 @@ function protected_pages_mail($key, &$message, $params) {
       $message['body'][] = Html::escape($body);
 
       break;
+  }
+}
+
+/**
+ * Implements hook_file_download().
+ */
+function protected_pages_file_download($uri) {
+  $account = \Drupal::currentUser();
+  if ($account->hasPermission('bypass pages password protection')) {
+    return;
+  }
+
+  $target = file_uri_target($uri);
+  //echo $target;exit;
+  $file_path = '/system/files/' . $target;
+
+  $fields = array('pid');
+  $conditions = array();
+  $conditions['general'][] = array(
+    'field' => 'path',
+    'value' => $file_path,
+    'operator' => '=',
+  );
+ 
+  $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+
+  if (isset($_SESSION['_protected_page']['passwords'][$pid]['expire_time'])) {
+    if (time() >= $_SESSION['_protected_page']['passwords'][$pid]['expire_time']) {
+      unset($_SESSION['_protected_page']['passwords'][$pid]['request_time']);
+      unset($_SESSION['_protected_page']['passwords'][$pid]['expire_time']);
+    }
+  }
+  if (isset($_SESSION['_protected_page']['passwords'][$pid]['request_time'])) {
+    return NULL;
+  }
+  if ($pid) {
+    $destination_path_array = \Drupal::destination()->getAsArray();
+    $destination_path_array['destination'] = $destination_path_array['destination'] . '/' . $target;
+    
+    $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
+    if (!empty($http_referer)) {
+      $query['back'] = urlencode($current_path);
+    }
+    $destination_path_array['protected_page'] = $pid;
+    $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $destination_path_array))
+            ->toString());
+    $response->send();
+    return;
+  }
+  else {
+    return NULL;
   }
 }

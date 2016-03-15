@@ -46,7 +46,7 @@ class ProtectedPagesController extends ControllerBase {
   }
 
   /**
-   * Generate the list of protected page.
+   * Generate the list of protected pages.
    */
   public function protectedPagesList() {
     $content = array();
@@ -58,8 +58,8 @@ class ProtectedPagesController extends ControllerBase {
     $rows = array();
     $headers = array(t('#'), t('Relative Path'), t('Operations'));
     $count = 1;
-
-    foreach (ProtectedPagesStorage::load() as $page) {
+    $result = ProtectedPagesStorage::loadAllPages();
+    foreach ($result as $page) {
       $operation_drop_button = array(
         array(
           '#type' => 'dropbutton',
@@ -98,6 +98,8 @@ class ProtectedPagesController extends ControllerBase {
       '#rows' => $rows,
       '#empty' => t('No records available.'),
     );
+    $content['pager'] = array('#type' => 'pager');
+   
     // Don't cache this page.
     $content['#cache']['max-age'] = 0;
 
