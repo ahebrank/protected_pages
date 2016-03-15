@@ -73,11 +73,6 @@ function protected_pages_file_download($uri) {
   if ($pid) {
     $destination_path_array = \Drupal::destination()->getAsArray();
     $destination_path_array['destination'] = $destination_path_array['destination'] . '/' . $target;
-    
-    $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
-    if (!empty($http_referer)) {
-      $query['back'] = urlencode($current_path);
-    }
     $destination_path_array['protected_page'] = $pid;
     $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $destination_path_array))
             ->toString());

@@ -39,10 +39,6 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
 
     if ($pid) {
       $query = \Drupal::destination()->getAsArray();
-      $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
-      if (!empty($http_referer)) {
-        $query['back'] = urlencode($current_path);
-      }
       $query['protected_page'] = $pid;
       $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
               ->toString());
@@ -62,10 +58,6 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
           $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
           if ($pid) {
             $query = \Drupal::destination()->getAsArray();
-            $http_referer = \Drupal::request()->server->get('HTTP_REFERER');
-            if (!empty($http_referer)) {
-              $query['back'] = urlencode($current_path);
-            }
             $query['protected_page'] = $pid;
 
             $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
