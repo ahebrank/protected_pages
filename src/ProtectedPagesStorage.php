@@ -114,7 +114,7 @@ class ProtectedPagesStorage {
 
     return $result;
   }
- 
+
   /**
    * Fetches all protected pages records from database.
    */
@@ -122,15 +122,14 @@ class ProtectedPagesStorage {
     $db = \Drupal::database();
 
     $results = $db->select('protected_pages', 'p')
-      ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+        ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
         ->fields('p')
-    ->orderBy('p.pid', 'DESC')
-    ->limit(20)
-    ->execute()
-    ->fetchAll();
+        ->orderBy('p.pid', 'DESC')
+        ->limit(20)
+        ->execute()
+        ->fetchAll();
 
     return $results;
-
   }
 
 }
