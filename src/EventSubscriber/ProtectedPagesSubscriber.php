@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Drupal\Component\Utility\Unicode;
-use Drupal\protected_pages\ProtectedPagesStorage;
 use Drupal\Core\Url;
 
 /**
@@ -102,7 +101,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
       'value' => $current_path,
       'operator' => '=',
     );
-    $protectedPagesStorage =\Drupal::service('protected_pages.storage');
+    $protectedPagesStorage = \Drupal::service('protected_pages.storage');
     $pid = $protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
 
     if (isset($_SESSION['_protected_page']['passwords'][$pid]['expire_time'])) {
