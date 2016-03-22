@@ -27,13 +27,23 @@ class ProtectedPagesController extends ControllerBase {
   protected $renderer;
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * Constructs a ProtectedPagesController object.
    *
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer service.
+   * @param \Drupal\protected_pages\ProtectedPagesStorage $protectedPagesStorage
+   *   The protected pages storage service.
    */
-  public function __construct(RendererInterface $renderer) {
+  public function __construct(RendererInterface $renderer, ProtectedPagesStorage $protectedPagesStorage) {
     $this->renderer = $renderer;
+    $this->protectedPagesStorage = $protectedPagesStorage;
   }
 
   /**
@@ -41,7 +51,7 @@ class ProtectedPagesController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-        $container->get('renderer')
+        $container->get('renderer'), $container->get('protected_pages.storage')
     );
   }
 
@@ -58,7 +68,7 @@ class ProtectedPagesController extends ControllerBase {
     $rows = array();
     $headers = array(t('#'), t('Relative Path'), t('Operations'));
     $count = 1;
-    $result = ProtectedPagesStorage::loadAllPages();
+    $result = $this->protectedPagesStorage->loadAllProtectedPages();
     foreach ($result as $page) {
       $operation_drop_button = array(
         array(
@@ -99,9 +109,6 @@ class ProtectedPagesController extends ControllerBase {
       '#empty' => t('No records available.'),
     );
     $content['pager'] = array('#type' => 'pager');
-
-    // Don't cache this page.
-    $content['#cache']['max-age'] = 0;
 
     return $content;
   }

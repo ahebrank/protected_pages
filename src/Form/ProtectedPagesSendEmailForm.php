@@ -21,6 +21,13 @@ use Drupal\protected_pages\ProtectedPagesStorage;
 class ProtectedPagesSendEmailForm extends FormBase {
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * The mail manager.
    *
    * @var \Drupal\Core\Mail\MailManagerInterface
@@ -42,9 +49,10 @@ class ProtectedPagesSendEmailForm extends FormBase {
    * @param \Egulias\EmailValidator\EmailValidator $email_validator
    *   The email validator.
    */
-  public function __construct(MailManagerInterface $mail_manager, EmailValidator $email_validator) {
+  public function __construct(MailManagerInterface $mail_manager, EmailValidator $email_validator, ProtectedPagesStorage $protectedPagesStorage) {
     $this->mailManager = $mail_manager;
     $this->emailValidator = $email_validator;
+    $this->protectedPagesStorage = $protectedPagesStorage;
   }
 
   /**
@@ -52,7 +60,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-        $container->get('plugin.manager.mail'), $container->get('email.validator')
+        $container->get('plugin.manager.mail'), $container->get('email.validator'), $container->get('protected_pages.storage')
     );
   }
 
@@ -147,7 +155,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
       'operator' => '=',
     );
 
-    $path = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+    $path = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
     $module = 'protected_pages';
     $key = 'protected_pages_details_mail';
     $to = $form_state->get('validated_recipents');

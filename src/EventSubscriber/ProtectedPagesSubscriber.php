@@ -102,8 +102,8 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
       'value' => $current_path,
       'operator' => '=',
     );
-
-    $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+    $protectedPagesStorage =\Drupal::service('protected_pages.storage');
+    $pid = $protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
 
     if (isset($_SESSION['_protected_page']['passwords'][$pid]['expire_time'])) {
       if (time() >= $_SESSION['_protected_page']['passwords'][$pid]['expire_time']) {

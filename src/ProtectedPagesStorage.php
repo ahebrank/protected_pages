@@ -7,12 +7,30 @@
 
 namespace Drupal\protected_pages;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Condition;
 
 /**
- * Provides storage class to handling various database operations.
+ * Defines the protected page storage service.
  */
 class ProtectedPagesStorage {
+
+  /**
+   * The database connection to use.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $connection;
+
+  /**
+   * Constructs a new protected page storage service.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The database connection to use.
+   */
+  public function __construct(Connection $connection) {
+    $this->connection = $connection;
+  }
 
   /**
    * Insert data into protected pages table.
@@ -23,9 +41,8 @@ class ProtectedPagesStorage {
    * @return int $pid
    *   The protected page id.
    */
-  public static function insertProtectedPage(array $page_data) {
-    $db = \Drupal::database();
-    $query = $db->insert('protected_pages')
+  public function insertProtectedPage(array $page_data) {
+    $query = $this->connection->insert('protected_pages')
         ->fields(array('password', 'path'))
         ->values($page_data);
     $pid = $query->execute();
@@ -40,9 +57,8 @@ class ProtectedPagesStorage {
    * @param int $pid
    *   The protected page id.
    */
-  public static function updateProtectedPage(array $page_data, $pid) {
-    $db = \Drupal::database();
-    $db->update('protected_pages')
+  public function updateProtectedPage(array $page_data, $pid) {
+    $this->connection->update('protected_pages')
         ->fields($page_data)
         ->condition('pid', $pid)
         ->execute();
@@ -54,9 +70,8 @@ class ProtectedPagesStorage {
    * @param int $pid
    *   The protected page id.
    */
-  public static function deletePage($pid) {
-    $db = \Drupal::database();
-    $db->delete('protected_pages')
+  public function deleteProtectedPage($pid) {
+    $this->connection->delete('protected_pages')
         ->condition('pid', $pid)
         ->execute();
   }
@@ -71,10 +86,8 @@ class ProtectedPagesStorage {
    * @param bool $get_single_field
    *   Boolean to check if functions needs to return one or multiple fields.
    */
-  public static function load($fields = array(), $query_conditions = array(), $get_single_field = FALSE) {
-    $db = \Drupal::database();
-
-    $select = $db->select('protected_pages');
+  public function loadProtectedPage($fields = array(), $query_conditions = array(), $get_single_field = FALSE) {
+    $select = $this->connection->select('protected_pages');
     if (count($fields)) {
       $select->fields('protected_pages', $fields);
     }
@@ -118,10 +131,8 @@ class ProtectedPagesStorage {
   /**
    * Fetches all protected pages records from database.
    */
-  public static function loadAllPages() {
-    $db = \Drupal::database();
-
-    $results = $db->select('protected_pages', 'p')
+  public function loadAllProtectedPages() {
+    $results = $this->connection->select('protected_pages', 'p')
         ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
         ->fields('p')
         ->orderBy('p.pid', 'DESC')

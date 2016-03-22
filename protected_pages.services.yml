@@ -3,3 +3,7 @@ services:
     class: Drupal\protected_pages\EventSubscriber\ProtectedPagesSubscriber
     tags:
       - {name: event_subscriber}
+  protected_pages.storage:
+    class: Drupal\protected_pages\ProtectedPagesStorage
+    arguments: ['@database']
+    

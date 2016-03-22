@@ -22,6 +22,13 @@ use Drupal\Core\Password\PasswordInterface;
 class ProtectedPagesAddForm extends FormBase {
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * The path validator.
    *
    * @var \Drupal\Core\Path\PathValidatorInterface
@@ -43,10 +50,11 @@ class ProtectedPagesAddForm extends FormBase {
    * @param \Drupal\Core\Password\PasswordInterface $password
    *   The password hashing service.
    */
-  public function __construct(PathValidatorInterface $path_validator, PasswordInterface $password) {
+  public function __construct(PathValidatorInterface $path_validator, PasswordInterface $password, ProtectedPagesStorage $protectedPagesStorage) {
 
     $this->pathValidator = $path_validator;
     $this->password = $password;
+    $this->protectedPagesStorage = $protectedPagesStorage;
   }
 
   /**
@@ -54,7 +62,7 @@ class ProtectedPagesAddForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-        $container->get('path.validator'), $container->get('password')
+        $container->get('path.validator'), $container->get('password'), $container->get('protected_pages.storage')
     );
   }
 
@@ -128,7 +136,7 @@ class ProtectedPagesAddForm extends FormBase {
         'operator' => '=',
       );
 
-      $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+      $pid = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
       if ($pid) {
         $form_state->setErrorByName('path', $this->t('Duplicate path entry is not allowed. There is already a path or its alias exists.'));
       }
@@ -144,7 +152,7 @@ class ProtectedPagesAddForm extends FormBase {
       'password' => $this->password->hash(Html::escape($form_state->getValue('password'))),
       'path' => Html::escape($form_state->getValue('path')),
     );
-    $pid = ProtectedPagesStorage::insertProtectedPage($page_data);
+    $pid = $this->protectedPagesStorage->insertProtectedPage($page_data);
     if ($pid) {
       drupal_set_message($this->t('The protected page settings has been successfully saved.'));
     }

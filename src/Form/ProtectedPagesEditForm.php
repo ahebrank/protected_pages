@@ -22,6 +22,13 @@ use Drupal\Core\Password\PasswordInterface;
 class ProtectedPagesEditForm extends FormBase {
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * The path validator.
    *
    * @var \Drupal\Core\Path\PathValidatorInterface
@@ -43,10 +50,11 @@ class ProtectedPagesEditForm extends FormBase {
    * @param \Drupal\Core\Password\PasswordInterface $password
    *   The password hashing service.
    */
-  public function __construct(PathValidatorInterface $path_validator, PasswordInterface $password) {
+  public function __construct(PathValidatorInterface $path_validator, PasswordInterface $password, ProtectedPagesStorage $protectedPagesStorage) {
 
     $this->pathValidator = $path_validator;
     $this->password = $password;
+    $this->protectedPagesStorage = $protectedPagesStorage;
   }
 
   /**
@@ -54,7 +62,7 @@ class ProtectedPagesEditForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-        $container->get('path.validator'), $container->get('password')
+        $container->get('path.validator'), $container->get('password'), $container->get('protected_pages.storage')
     );
   }
 
@@ -80,15 +88,16 @@ class ProtectedPagesEditForm extends FormBase {
       'operator' => '=',
     );
 
-    $path = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+    $path = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
     $form = array();
 
     $form['rules_list'] = array(
       '#title' => $this->t("Edit Protected Page Relative path and password."),
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#description' => $this->t('Please enter the relative path and its corresponding
     password. When user opens this url, they will asked to enter password to
     view this page. For example, "/node/5", "/new-events" etc.'),
+      '#open' => TRUE,
     );
     $form['rules_list']['path'] = array(
       '#type' => 'textfield',
@@ -148,7 +157,7 @@ class ProtectedPagesEditForm extends FormBase {
         'operator' => '<>',
       );
 
-      $pid = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+      $pid = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
       if ($pid) {
         $form_state->setErrorByName('path', $this->t('Duplicate path entry is not allowed. There is already a path or its alias exists.'));
       }
@@ -166,7 +175,7 @@ class ProtectedPagesEditForm extends FormBase {
     }
     $page_data['path'] = Html::escape($form_state->getValue('path'));
 
-    ProtectedPagesStorage::updateProtectedPage($page_data, $form_state->getValue('pid'));
+    $this->protectedPagesStorage->updateProtectedPage($page_data, $form_state->getValue('pid'));
     drupal_set_message($this->t('The protected page settings has been successfully saved.'));
     drupal_flush_all_caches();
     $form_state->setRedirect('protected_pages_list');

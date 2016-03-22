@@ -21,6 +21,13 @@ use Drupal\Component\Utility\Html;
 class ProtectedPagesLoginForm extends FormBase {
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * Provides the password hashing service object.
    *
    * @var \Drupal\Core\Password\PasswordInterface
@@ -33,9 +40,10 @@ class ProtectedPagesLoginForm extends FormBase {
    * @param \Drupal\Core\Password\PasswordInterface $password
    *   The password hashing service.
    */
-  public function __construct(PasswordInterface $password) {
+  public function __construct(PasswordInterface $password, ProtectedPagesStorage $protectedPagesStorage) {
 
     $this->password = $password;
+    $this->protectedPagesStorage = $protectedPagesStorage;
   }
 
   /**
@@ -43,7 +51,7 @@ class ProtectedPagesLoginForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-        $container->get('password')
+        $container->get('password'), $container->get('protected_pages.storage')
     );
   }
 
@@ -130,7 +138,7 @@ class ProtectedPagesLoginForm extends FormBase {
         'operator' => '=',
       );
 
-      $password = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+      $password = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
 
       if (!$this->password->check($form_state->getValue('password'), $password)) {
 
@@ -146,7 +154,7 @@ class ProtectedPagesLoginForm extends FormBase {
         'operator' => '=',
       );
 
-      $password = ProtectedPagesStorage::load($fields, $conditions, TRUE);
+      $password = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
       $global_password = $config->get('password.protected_pages_global_password');
       if (!$this->password->check($form_state->getValue('password'), $password) && !$this->password->check($form_state->getValue('password'), $global_password)) {
 
