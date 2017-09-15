@@ -37,6 +37,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
     if ($pid) {
+      \Drupal::service('page_cache_kill_switch')->trigger();
       $query = \Drupal::destination()->getAsArray();
       $query['protected_page'] = $pid;
       $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
@@ -56,6 +57,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
                       ->getPathByAlias($current_path));
           $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
           if ($pid) {
+            \Drupal::service('page_cache_kill_switch')->trigger();
             $query = \Drupal::destination()->getAsArray();
             $query['protected_page'] = $pid;
 
