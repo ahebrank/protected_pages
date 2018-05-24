@@ -1,0 +1,5 @@
+{
+   "name": "ahebrank/protected_pages",
+   "type": "drupal-module",
+   "description": "Protect pages or private files by password"
+}

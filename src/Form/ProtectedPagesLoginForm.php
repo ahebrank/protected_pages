@@ -21,13 +21,6 @@ use Drupal\Component\Utility\Html;
 class ProtectedPagesLoginForm extends FormBase {
 
   /**
-   * The protected pages storage service.
-   *
-   * @var \Drupal\protected_pages\ProtectedPagesStorage
-   */
-  protected $protectedPagesStorage;
-
-  /**
    * Provides the password hashing service object.
    *
    * @var \Drupal\Core\Password\PasswordInterface
@@ -35,10 +28,20 @@ class ProtectedPagesLoginForm extends FormBase {
   protected $password;
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+
+  /**
    * Constructs a new ProtectedPagesLoginForm.
    *
    * @param \Drupal\Core\Password\PasswordInterface $password
    *   The password hashing service.
+   * @param \Drupal\protected_pages\ProtectedPagesStorage $protected_pages_storage
+   *   For getting the protected_pages storage service.
    */
   public function __construct(PasswordInterface $password, ProtectedPagesStorage $protectedPagesStorage) {
 

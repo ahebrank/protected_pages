@@ -22,13 +22,6 @@ use Drupal\Core\Password\PasswordInterface;
 class ProtectedPagesEditForm extends FormBase {
 
   /**
-   * The protected pages storage service.
-   *
-   * @var \Drupal\protected_pages\ProtectedPagesStorage
-   */
-  protected $protectedPagesStorage;
-
-  /**
    * The path validator.
    *
    * @var \Drupal\Core\Path\PathValidatorInterface
@@ -43,12 +36,21 @@ class ProtectedPagesEditForm extends FormBase {
   protected $password;
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * Constructs a new ProtectedPagesEditForm.
    *
    * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
    *   The path validator.
    * @param \Drupal\Core\Password\PasswordInterface $password
    *   The password hashing service.
+   * @param \Drupal\protected_pages\ProtectedPagesStorage $protected_pages_storage
+   *   For getting the protected_pages storage service.
    */
   public function __construct(PathValidatorInterface $path_validator, PasswordInterface $password, ProtectedPagesStorage $protectedPagesStorage) {
 

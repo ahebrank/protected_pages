@@ -1,9 +1,10 @@
 services:
-  protected_pages.check_protected_page:
-    class: Drupal\protected_pages\EventSubscriber\ProtectedPagesSubscriber
-    arguments: ['@page_cache_kill_switch']
-    tags:
-      - {name: event_subscriber}
   protected_pages.storage:
     class: Drupal\protected_pages\ProtectedPagesStorage
     arguments: ['@database']
+  protected_pages.check_protected_page:
+    class: Drupal\protected_pages\EventSubscriber\ProtectedPagesSubscriber
+    arguments: ['@current_user', '@path.alias_manager', '@protected_pages.storage', '@path.current', '@page_cache_kill_switch']
+    tags:
+      - {name: event_subscriber}
+  

@@ -23,15 +23,5 @@ DESCRIPTION:
 
 INSTALLATION:
 
-1. Place the entire protected_pages directory into sites modules directory
-  (eg /modules/contrib).
-
-2. Enable this module by navigating to:
-
-     Administration > Extend
-
-3. Go to admin/people/permissions#module-protected_pages and set permissions.
-
-4. Go to admin/config/system/protected_pages/settings and configure settings.
-
-5) Go to admin/config/system/protected_pages and start adding protected pages.
+1. composer require ahebrank/protected_pages
+2. drush en -y protected_pages

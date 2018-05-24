@@ -21,13 +21,6 @@ use Drupal\protected_pages\ProtectedPagesStorage;
 class ProtectedPagesSendEmailForm extends FormBase {
 
   /**
-   * The protected pages storage service.
-   *
-   * @var \Drupal\protected_pages\ProtectedPagesStorage
-   */
-  protected $protectedPagesStorage;
-
-  /**
    * The mail manager.
    *
    * @var \Drupal\Core\Mail\MailManagerInterface
@@ -42,12 +35,21 @@ class ProtectedPagesSendEmailForm extends FormBase {
   protected $emailValidator;
 
   /**
+   * The protected pages storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
    * Constructs a new ProtectedPagesSendEmailForm.
    *
    * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
    *   The mail manager.
    * @param \Egulias\EmailValidator\EmailValidator $email_validator
    *   The email validator.
+   * @param \Drupal\protected_pages\ProtectedPagesStorage $protected_pages_storage
+   *   For getting the protected_pages storage service.
    */
   public function __construct(MailManagerInterface $mail_manager, EmailValidator $email_validator, ProtectedPagesStorage $protectedPagesStorage) {
     $this->mailManager = $mail_manager;

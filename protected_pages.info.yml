@@ -1,6 +1,6 @@
 name: 'Protected Pages'
 type: module
-description: 'Allow you to protect pages, private files by secure password.'
+description: 'Protect pages or private files by password.'
 configure: protected_pages_settings
 package: 'Access'
 core: 8.x

@@ -11,7 +11,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Path\AliasManagerInterface;
+use Drupal\protected_pages\ProtectedPagesStorage;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\PageCache\ResponsePolicy\ResponsePolicyInterface;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
 
@@ -21,19 +26,52 @@ use Drupal\Core\Url;
 class ProtectedPagesSubscriber implements EventSubscriberInterface {
 
   /**
+   * Alias Manager Service.
+   *
+   * @var \Drupal\Core\Path\AliasManagerInterface
+   */
+  protected $aliasManager;
+
+  /**
+   * Protected Pages Storage service.
+   *
+   * @var \Drupal\protected_pages\ProtectedPagesStorage
+   */
+  protected $protectedPagesStorage;
+
+  /**
+   * The current path.
+   *
+   * @var \Drupal\Core\Path\CurrentPathStack
+   */
+  protected $currentPath;
+
+  /**
    * Page Cache Kill Switch Service.
    *
-   * @var \Drupal\Core\PageCache\ResponsePolicy\KillSwitch
+   * @var \Drupal\Core\PageCache\ResponsePolicy\ResponsePolicyInterface
    */
   protected $killSwitch;
 
   /**
    * Constructor.
    *
-   * @param \Drupal\Core\PageCache\ResponsePolicy\KillSwitch $kill_switch
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user.
+   * @param \Drupal\Core\Path\AliasManagerInterface $alias_manager
+   *   For getting the alias manager service.
+   * @param \Drupal\protected_pages\ProtectedPagesStorage $protected_pages_storage
+   *   For getting the protected_pages storage service.
+   * @param \Drupal\Core\Path\CurrentPathStack $current_path
+   *   The current path.
+   * @param \Drupal\Core\PageCache\ResponsePolicy\ResponsePolicyInterface $kill_switch
    *   For getting the page cache kill switch service.
    */
-  public function __construct(KillSwitch $kill_switch) {
+  public function __construct(AccountInterface $current_user, AliasManagerInterface $alias_manager, ProtectedPagesStorage $protected_pages_storage, CurrentPathStack $current_path, ResponsePolicyInterface $kill_switch) {
+    $this->currentUser = $current_user;
+    $this->aliasManager = $alias_manager;
+    $this->protectedPagesStorage = $protected_pages_storage;
+    $this->currentPath = $current_path;
     $this->killSwitch = $kill_switch;
   }
 
@@ -44,48 +82,35 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    *   The event to process.
    */
   public function checkProtectedPage(FilterResponseEvent $event) {
-    $account = \Drupal::currentUser();
-    if ($account->hasPermission('bypass pages password protection')) {
+    if ($this->currentUser->hasPermission('bypass pages password protection')) {
       return;
     }
-    $current_path = \Drupal::service('path.alias_manager')
-        ->getAliasByPath(\Drupal::service('path.current')->getPath());
-    $normal_path = Unicode::strtolower(\Drupal::service('path.alias_manager')
-                ->getPathByAlias($current_path));
+
+    $current_path = Unicode::strtolower($this->aliasManager->getAliasByPath($this->currentPath->getPath()));
+    $normal_path = Unicode::strtolower($this->aliasManager->getPathByAlias($current_path));
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
-    if ($pid) {
-      $this->killSwitch->trigger();
-      $query = \Drupal::destination()->getAsArray();
-      $query['protected_page'] = $pid;
-      $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
-              ->toString());
-      $response->send();
-      return;
-    }
-    else {
+    if (!$pid) {
       $page_node = \Drupal::request()->attributes->get('node');
       if (is_object($page_node)) {
         $nid = $page_node->id();
         if (isset($nid) && is_numeric($nid)) {
           $path_to_node = '/node/' . $nid;
-          $current_path = Unicode::strtolower(\Drupal::service('path.alias_manager')
-                      ->getAliasByPath($path_to_node));
-          $normal_path = Unicode::strtolower(\Drupal::service('path.alias_manager')
-                      ->getPathByAlias($current_path));
+          $current_path = Unicode::strtolower($this->aliasManager->getAliasByPath($path_to_node));
+          $normal_path = Unicode::strtolower($this->aliasManager->getPathByAlias($current_path));
           $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
-          if ($pid) {
-            $this->killSwitch->trigger();
-            $query = \Drupal::destination()->getAsArray();
-            $query['protected_page'] = $pid;
-
-            $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
-                    ->toString());
-            $response->send();
-            return;
-          }
         }
       }
+    }
+
+    if ($pid) {
+      $this->killSwitch->trigger();
+      $query = \Drupal::destination()->getAsArray();
+      $query['protected_page'] = $pid;
+      $response = new RedirectResponse(Url::fromUri('internal:/protected-page', ['query' => $query])
+        ->toString());
+      $response->send();
+      return;
     }
   }
 
@@ -93,7 +118,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE][] = array('checkProtectedPage');
+    $events[KernelEvents::RESPONSE][] = ['checkProtectedPage'];
     return $events;
   }
 
@@ -110,19 +135,18 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    */
   public function protectedPagesIsPageLocked($current_path, $normal_path) {
     $fields = array('pid');
-    $conditions = array();
-    $conditions['or'][] = array(
+    $conditions = [];
+    $conditions['or'][] = [
       'field' => 'path',
       'value' => $normal_path,
       'operator' => '=',
-    );
-    $conditions['or'][] = array(
+    ];
+    $conditions['or'][] = [
       'field' => 'path',
       'value' => $current_path,
       'operator' => '=',
-    );
-    $protectedPagesStorage = \Drupal::service('protected_pages.storage');
-    $pid = $protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
+    ];
+    $pid = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
 
     if (isset($_SESSION['_protected_page']['passwords'][$pid]['expire_time'])) {
       if (time() >= $_SESSION['_protected_page']['passwords'][$pid]['expire_time']) {
