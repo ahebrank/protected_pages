@@ -2,8 +2,8 @@
                 P R O T E C T E D   P A G E S   M O D U L E
 ********************************************************************
 Original Author: Varun Mishra
-Current Maintainers: Varun Mishra
-Email: varunmishra2006@gmail.com
+Current Maintainers: Andy Hebrank
+Email: andy@insidenewcity.com
 
 ********************************************************************
 DESCRIPTION:
