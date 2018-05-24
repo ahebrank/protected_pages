@@ -92,7 +92,7 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
   public function protectedPagesValidateIntegerPositive($element, FormStateInterface $form_state) {
     $value = $element['#value'];
     if ($value !== '' && (!is_numeric($value) || intval($value) != $value || $value < 0)) {
-      $form_state->setError($element, $this->t('%name must be a positive integer.', array('%name' => $element['#title'])));
+      $form_state->setError($element, $this->t('%name must be a positive integer.', ['%name' => $element['#title']]));
     }
   }
 
@@ -103,13 +103,13 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
     $form = parent::buildForm($form, $form_state);
     $config = $this->config('protected_pages.settings');
 
-    $form['protected_pages_password_fieldset'] = array(
+    $form['protected_pages_password_fieldset'] = [
       '#type' => 'details',
       '#title' => $this->t('Protected Pages Password Settings'),
       '#description' => $this->t('Configure password related settings.'),
       '#open' => TRUE,
-    );
-    $global_password_help_text = array();
+    ];
+    $global_password_help_text = [];
 
     $global_password_help_text[] = $this->t('Allow per page password = Only per page password will be accepted. Global password will not be accepted.');
     $global_password_help_text[] = $this->t('Allow per page password or Global password = Per page  password and global password both will be accepted.');
@@ -119,27 +119,27 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#items' => $global_password_help_text,
       '#title' => $this->t('Please select the appropriate option for protected pages handling.'),
     ];
-    $form['protected_pages_password_fieldset']['protected_pages_user_global_password'] = array(
+    $form['protected_pages_password_fieldset']['protected_pages_user_global_password'] = [
       '#type' => 'select',
       '#title' => t('Global Password Setting'),
       '#default_value' => $config->get('password.per_page_or_global'),
-      '#options' => array(
+      '#options' => [
         'per_page_password' => $this->t('Allow per page password'),
         'per_page_or_global' => $this->t('Allow per page password or Global password'),
         'only_global' => $this->t('Allow Only Global'),
-      ),
+      ],
       '#description' => $this->renderer->render($global_password_help_text_list),
-    );
+    ];
 
-    $form['protected_pages_password_fieldset']['protected_pages_global_password_field'] = array(
+    $form['protected_pages_password_fieldset']['protected_pages_global_password_field'] = [
       '#type' => 'password_confirm',
       '#title' => $this->t('Global Password'),
       '#description' => $this->t('The default password for all protected pages. This
                                 password is necessary if you select the previous checkbox "Allow per page
                                 password or Global password" or "Allow Only Global" options above.'),
-    );
+    ];
 
-    $form['protected_pages_password_fieldset']['protected_pages_session_expire_time'] = array(
+    $form['protected_pages_password_fieldset']['protected_pages_session_expire_time'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Session Expire Time'),
       '#description' => $this->t('When user enters password a session is created.
@@ -149,77 +149,77 @@ class ProtectedPagesSettingForm extends ConfigFormBase {
       '#default_value' => $config->get('password.protected_pages_session_expire_time'),
       '#required' => TRUE,
       '#size' => 10,
-      '#element_validate' => array(
-        array(
+      '#element_validate' => [
+        [
           $this,
           'protectedPagesValidateIntegerPositive',
-        ),
-      ),
+        ],
+      ],
       '#field_suffix' => $this->t('minutes'),
-    );
+    ];
 
-    $form['protected_pages_email_fieldset'] = array(
+    $form['protected_pages_email_fieldset'] = [
       '#type' => 'details',
       '#title' => $this->t('Protected pages email settings'),
       '#description' => $this->t('The following settings allows admin to send emails to multiple users about protected pages details to access protected pages.'),
       '#open' => TRUE,
-    );
+    ];
 
-    $form['protected_pages_email_fieldset']['protected_pages_email_subject'] = array(
+    $form['protected_pages_email_fieldset']['protected_pages_email_subject'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Email subject'),
       '#default_value' => $config->get('email.subject'),
       '#description' => $this->t('Enter the subject of the email.'),
-    );
+    ];
 
-    $form['protected_pages_email_fieldset']['protected_pages_email_body'] = array(
+    $form['protected_pages_email_fieldset']['protected_pages_email_body'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Email content'),
       '#rows' => 15,
       '#default_value' => $config->get('email.body'),
       '#description' => $this->t('Enter the body of the email. Only [protected-page-url] and [site-name] tokens are available.
       Since password is encrypted, therefore we can not provide it by token.'),
-    );
+    ];
 
-    $form['protected_pages_other_fieldset'] = array(
+    $form['protected_pages_other_fieldset'] = [
       '#type' => 'details',
       '#title' => $this->t('Protected Pages Other Settings'),
       '#description' => $this->t('Configure other settings.'),
       '#open' => TRUE,
-    );
+    ];
 
-    $form['protected_pages_other_fieldset']['protected_pages_title'] = array(
+    $form['protected_pages_other_fieldset']['protected_pages_title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Password page title'),
       '#default_value' => $config->get('others.protected_pages_title'),
       '#description' => $this->t('Enter the title of the protected page.'),
-    );
+    ];
 
-    $form['protected_pages_other_fieldset']['protected_pages_description'] = array(
+    $form['protected_pages_other_fieldset']['protected_pages_description'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Password page description (inside the field set)'),
       '#default_value' => $config->get('others.protected_pages_description'),
       '#description' => $this->t('Enter specific description for the protected page. This description is displayed inside the fieldset. HTML is accepted.'),
-    );
+    ];
 
-    $form['protected_pages_other_fieldset']['protected_pages_password_label'] = array(
+    $form['protected_pages_other_fieldset']['protected_pages_password_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Password field label'),
       '#default_value' => $config->get('others.protected_pages_password_label'),
       '#description' => $this->t('Enter the text for the password field label.'),
-    );
-    $form['protected_pages_other_fieldset']['protected_pages_submit_button_text'] = array(
+    ];
+    $form['protected_pages_other_fieldset']['protected_pages_submit_button_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Submit Button Text'),
       '#default_value' => $config->get('others.protected_pages_submit_button_text'),
       '#description' => $this->t('Enter the text for the submit button of enter password form.'),
-    );
-    $form['protected_pages_other_fieldset']['protected_pages_incorrect_password_msg'] = array(
+    ];
+    $form['protected_pages_other_fieldset']['protected_pages_incorrect_password_msg'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Incorrect Password Error Text'),
       '#default_value' => $config->get('others.protected_pages_incorrect_password_msg'),
       '#description' => $this->t('This error text will appear if someone enters wrong password in "Enter password screen".'),
-    );
+    ];
 
     return $form;
   }

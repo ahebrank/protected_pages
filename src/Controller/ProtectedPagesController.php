@@ -54,56 +54,56 @@ class ProtectedPagesController extends ControllerBase {
    * Generate the list of protected pages.
    */
   public function protectedPagesList() {
-    $content = array();
+    $content = [];
 
-    $content['message'] = array(
+    $content['message'] = [
       '#markup' => $this->t('List of password protected pages.'),
-    );
+    ];
 
-    $rows = array();
-    $headers = array(t('#'), t('Relative Path'), t('Operations'));
+    $rows = [];
+    $headers = [t('#'), t('Relative Path'), t('Operations')];
     $count = 1;
     $result = $this->protectedPagesStorage->loadAllProtectedPages();
     foreach ($result as $page) {
-      $operation_drop_button = array(
-        array(
+      $operation_drop_button = [
+        [
           '#type' => 'dropbutton',
           '#links' =>
-          array(
-            'edit-protected-page' => array(
+          [
+            'edit-protected-page' => [
               'title' => $this->t('Edit'),
               'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/edit'),
-            ),
-            'delete-protected-page' => array(
+            ],
+            'delete-protected-page' => [
               'title' => $this->t('Delete'),
               'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/delete'),
-            ),
-            'send-email' => array(
+            ],
+            'send-email' => [
               'title' => $this->t('Send E-mail'),
               'url' => Url::fromUri('internal:/admin/config/system/protected_pages/' . $page->pid . '/send_email'),
-            ),
-          ),
-        ),
-      );
+            ],
+          ],
+        ],
+      ];
 
       $operations = $this->renderer->render($operation_drop_button);
-      $rows[] = array(
+      $rows[] = [
         'data' =>
-        array(
+        [
           $count,
           Html::escape($page->path),
           $operations,
-        ),
-      );
+        ],
+      ];
       $count++;
     }
-    $content['table'] = array(
+    $content['table'] = [
       '#type' => 'table',
       '#header' => $headers,
       '#rows' => $rows,
       '#empty' => t('No records available.'),
-    );
-    $content['pager'] = array('#type' => 'pager');
+    ];
+    $content['pager'] = ['#type' => 'pager'];
 
     return $content;
   }

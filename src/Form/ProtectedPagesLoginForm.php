@@ -89,32 +89,32 @@ class ProtectedPagesLoginForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('protected_pages.settings');
-    $form = array();
+    $form = [];
 
-    $form['protected_page_enter_password'] = array(
+    $form['protected_page_enter_password'] = [
       '#type' => 'fieldset',
       '#collapsible' => FALSE,
-    );
+    ];
 
-    $form['protected_page_enter_password']['protected_page_pid'] = array(
+    $form['protected_page_enter_password']['protected_page_pid'] = [
       '#markup' => '<div class="protected_pages_description"><strong>' . $config->get('others.protected_pages_description') . '</strong></div>',
-    );
-    $form['protected_page_enter_password']['password'] = array(
+    ];
+    $form['protected_page_enter_password']['password'] = [
       '#type' => 'password',
       '#title' => $config->get('others.protected_pages_password_label'),
       '#size' => 20,
       '#required' => TRUE,
-    );
+    ];
 
-    $form['protected_page_pid'] = array(
+    $form['protected_page_pid'] = [
       '#type' => 'hidden',
       '#value' => $this->getRequest()->query->get('protected_page'),
-    );
+    ];
 
-    $form['protected_page_enter_password']['submit'] = array(
+    $form['protected_page_enter_password']['submit'] = [
       '#type' => 'submit',
       '#value' => $config->get('others.protected_pages_submit_button_text'),
-    );
+    ];
 
     return $form;
   }
@@ -127,13 +127,13 @@ class ProtectedPagesLoginForm extends FormBase {
     $global_password_setting = $config->get('password.per_page_or_global');
 
     if ($global_password_setting == 'per_page_password') {
-      $fields = array('password');
-      $conditions = array();
-      $conditions['general'][] = array(
+      $fields = ['password'];
+      $conditions = [];
+      $conditions['general'][] = [
         'field' => 'pid',
         'value' => $form_state->getValue('protected_page_pid'),
         'operator' => '=',
-      );
+      ];
 
       $password = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
 
@@ -143,13 +143,13 @@ class ProtectedPagesLoginForm extends FormBase {
       }
     }
     elseif ($global_password_setting == 'per_page_or_global') {
-      $fields = array('password');
-      $conditions = array();
-      $conditions['general'][] = array(
+      $fields = ['password'];
+      $conditions = [];
+      $conditions['general'][] = [
         'field' => 'pid',
         'value' => $form_state->getValue('protected_page_pid'),
         'operator' => '=',
-      );
+      ];
 
       $password = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
       $global_password = $config->get('password.protected_pages_global_password');

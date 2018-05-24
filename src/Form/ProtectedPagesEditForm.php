@@ -77,44 +77,44 @@ class ProtectedPagesEditForm extends FormBase {
    *   The ID of the protected page.
    */
   public function buildForm(array $form, FormStateInterface $form_state, $pid = NULL) {
-    $fields = array('path');
-    $conditions = array();
-    $conditions['general'][] = array(
+    $fields = ['path'];
+    $conditions = [];
+    $conditions['general'][] = [
       'field' => 'pid',
       'value' => $pid,
       'operator' => '=',
-    );
+    ];
 
     $path = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
-    $form = array();
+    $form = [];
 
-    $form['rules_list'] = array(
+    $form['rules_list'] = [
       '#title' => $this->t("Edit Protected Page Relative path and password."),
       '#type' => 'details',
       '#description' => $this->t('Please enter the relative path and its corresponding
     password. When user opens this url, they will asked to enter password to
     view this page. For example, "/node/5", "/new-events" etc.'),
       '#open' => TRUE,
-    );
-    $form['rules_list']['path'] = array(
+    ];
+    $form['rules_list']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Relative Path'),
       '#default_value' => $path,
       '#description' => $this->t('Enter relative drupal path. For example, "/node/5", "/new-events" etc.'),
       '#required' => TRUE,
-    );
-    $form['rules_list']['password'] = array(
+    ];
+    $form['rules_list']['password'] = [
       '#type' => 'password_confirm',
       '#size' => 25,
-    );
-    $form['rules_list']['pid'] = array(
+    ];
+    $form['rules_list']['pid'] = [
       '#type' => 'hidden',
       '#value' => $pid,
-    );
-    $form['rules_list']['submit'] = array(
+    ];
+    $form['rules_list']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
-    );
+    ];
 
     return $form;
   }
@@ -136,23 +136,23 @@ class ProtectedPagesEditForm extends FormBase {
       if (!$this->pathValidator->isValid($normal_path)) {
         $form_state->setErrorByName('path', $this->t('Please enter a correct path!'));
       }
-      $fields = array('pid');
-      $conditions = array();
-      $conditions['or'][] = array(
+      $fields = ['pid'];
+      $conditions = [];
+      $conditions['or'][] = [
         'field' => 'path',
         'value' => $normal_path,
         'operator' => '=',
-      );
-      $conditions['or'][] = array(
+      ];
+      $conditions['or'][] = [
         'field' => 'path',
         'value' => $path_alias,
         'operator' => '=',
-      );
-      $conditions['and'][] = array(
+      ];
+      $conditions['and'][] = [
         'field' => 'pid',
         'value' => $form_state->getValue('pid'),
         'operator' => '<>',
-      );
+      ];
 
       $pid = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
       if ($pid) {
@@ -165,7 +165,7 @@ class ProtectedPagesEditForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $page_data = array();
+    $page_data = [];
     $password = $form_state->getValue('password');
     if (!empty($password)) {
       $page_data['password'] = $this->password->hash(Html::escape($password));

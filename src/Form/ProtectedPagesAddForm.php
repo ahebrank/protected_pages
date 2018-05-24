@@ -73,31 +73,31 @@ class ProtectedPagesAddForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form = array();
+    $form = [];
 
-    $form['rules_list'] = array(
+    $form['rules_list'] = [
       '#title' => $this->t('Add Protected Page Relative path and password.'),
       '#type' => 'details',
       '#description' => $this->t('Please enter the relative path and its corresponding
     password. When user opens this url, they will asked to enter password to
     view this page. For example, "/node/5", "/new-events" etc.'),
       '#open' => TRUE,
-    );
-    $form['rules_list']['path'] = array(
+    ];
+    $form['rules_list']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Relative Path'),
       '#description' => $this->t('Enter relative drupal path. For example, "/node/5", "new-events" etc.'),
       '#required' => TRUE,
-    );
-    $form['rules_list']['password'] = array(
+    ];
+    $form['rules_list']['password'] = [
       '#type' => 'password_confirm',
       '#size' => 25,
       '#required' => TRUE,
-    );
-    $form['rules_list']['submit'] = array(
+    ];
+    $form['rules_list']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
-    );
+    ];
 
     return $form;
   }
@@ -119,18 +119,18 @@ class ProtectedPagesAddForm extends FormBase {
       if (!$this->pathValidator->isValid($normal_path)) {
         $form_state->setErrorByName('path', $this->t('Please enter a correct path!'));
       }
-      $fields = array('pid');
-      $conditions = array();
-      $conditions['or'][] = array(
+      $fields = ['pid'];
+      $conditions = [];
+      $conditions['or'][] = [
         'field' => 'path',
         'value' => $normal_path,
         'operator' => '=',
-      );
-      $conditions['or'][] = array(
+      ];
+      $conditions['or'][] = [
         'field' => 'path',
         'value' => $path_alias,
         'operator' => '=',
-      );
+      ];
 
       $pid = $this->protectedPagesStorage->loadProtectedPage($fields, $conditions, TRUE);
       if ($pid) {
@@ -144,10 +144,10 @@ class ProtectedPagesAddForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    $page_data = array(
+    $page_data = [
       'password' => $this->password->hash(Html::escape($form_state->getValue('password'))),
       'path' => Html::escape($form_state->getValue('path')),
-    );
+    ];
     $pid = $this->protectedPagesStorage->insertProtectedPage($page_data);
     if ($pid) {
       drupal_set_message($this->t('The protected page settings has been successfully saved.'));
