@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\protected_pages\EventSubscriber\ProtectedPagesSubscriber.
- */
-
 namespace Drupal\protected_pages\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -12,7 +7,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\protected_pages\ProtectedPagesStorage;
@@ -47,11 +41,11 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    */
   protected $currentPath;
 
-   /**
-    * The request stack service.
-    *
-    * @var \Symfony\Component\HttpFoundation\RequestStack
-    */
+  /**
+   * The request stack service.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
   protected $requestStack;
 
   /**
@@ -141,7 +135,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    * @param string $normal_path
    *   Current normal path.
    *
-   * @return int $pid
+   * @return int
    *   The protected page id.
    */
   public function protectedPagesIsPageLocked($current_path, $normal_path) {

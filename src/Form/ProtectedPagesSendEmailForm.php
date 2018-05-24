@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\protected_pages\Form\ProtectedPagesSendEmailForm.
- */
-
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -168,7 +163,7 @@ class ProtectedPagesSendEmailForm extends FormBase {
     $params['subject'] = $form_state->getValue('subject');
     $params['body'] = $form_state->getValue('body');
     $params['protected_page_url'] = Url::fromUri('internal:' . $path, ['absolute' => TRUE])
-        ->toString();
+      ->toString();
     $result = $this->mailManager->mail($module, $key, $to, $language_code, $params, $from, $send);
     if ($result['result'] !== TRUE) {
       $message = $this->t('There was a problem sending your email notification to @email.', array('@email' => $to));

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\protected_pages\Form\ProtectedPagesLoginForm.
- */
-
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -33,7 +28,6 @@ class ProtectedPagesLoginForm extends FormBase {
    * @var \Drupal\protected_pages\ProtectedPagesStorage
    */
   protected $protectedPagesStorage;
-
 
   /**
    * Constructs a new ProtectedPagesLoginForm.

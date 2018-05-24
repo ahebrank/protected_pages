@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\protected_pages\Controller\ProtectedPagesController.
- */
-
 namespace Drupal\protected_pages\Controller;
 
 use Drupal\protected_pages\ProtectedPagesStorage;
