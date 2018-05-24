@@ -76,7 +76,7 @@ function protected_pages_file_download($uri) {
     $destination_path_array['destination'] = $destination_path_array['destination'] . '/' . $target;
     $destination_path_array['protected_page'] = $pid;
     $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $destination_path_array))
-            ->toString());
+      ->toString());
     $response->send();
     return;
   }

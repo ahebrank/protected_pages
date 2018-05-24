@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\protected_pages\Form\ProtectedPagesEditForm.
- */
-
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -135,9 +130,9 @@ class ProtectedPagesEditForm extends FormBase {
     }
     else {
       $normal_path = \Drupal::service('path.alias_manager')
-          ->getPathByAlias($form_state->getValue('path'));
+        ->getPathByAlias($form_state->getValue('path'));
       $path_alias = Unicode::strtolower(\Drupal::service('path.alias_manager')
-                  ->getAliasByPath($form_state->getValue('path')));
+        ->getAliasByPath($form_state->getValue('path')));
       if (!$this->pathValidator->isValid($normal_path)) {
         $form_state->setErrorByName('path', $this->t('Please enter a correct path!'));
       }

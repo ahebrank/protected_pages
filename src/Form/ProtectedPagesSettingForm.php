@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\protected_pages\Form\ProtectedPagesSettingForm.
- */
-
 namespace Drupal\protected_pages\Form;
 
 use Drupal\Core\Form\FormStateInterface;
