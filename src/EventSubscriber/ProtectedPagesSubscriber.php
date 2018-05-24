@@ -139,7 +139,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    *   The protected page id.
    */
   public function protectedPagesIsPageLocked($current_path, $normal_path) {
-    $fields = array('pid');
+    $fields = ['pid'];
     $conditions = [];
     $conditions['or'][] = [
       'field' => 'path',

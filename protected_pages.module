@@ -22,11 +22,11 @@ function protected_pages_mail($key, &$message, $params) {
     // Send a simple message from the contact form.
     case 'protected_pages_details_mail':
 
-      $tokens = array('[protected-page-url]', '[site-name]');
-      $replcements = array(
+      $tokens = ['[protected-page-url]', '[site-name]'];
+      $replcements = [
         $params['protected_page_url'],
         \Drupal::config('system.site')->get('name'),
-      );
+      ];
 
       $body = str_replace($tokens, $replcements, $params['body']);
 
@@ -50,13 +50,13 @@ function protected_pages_file_download($uri) {
   $target = file_uri_target($uri);
   $file_path = '/system/files/' . $target;
 
-  $fields = array('pid');
-  $conditions = array();
-  $conditions['general'][] = array(
+  $fields = ['pid'];
+  $conditions = [];
+  $conditions['general'][] = [
     'field' => 'path',
     'value' => $file_path,
     'operator' => '=',
-  );
+  ];
 
   $protected_pages_storage = \Drupal::service('protected_pages.storage');
 
@@ -75,7 +75,7 @@ function protected_pages_file_download($uri) {
     $destination_path_array = \Drupal::destination()->getAsArray();
     $destination_path_array['destination'] = $destination_path_array['destination'] . '/' . $target;
     $destination_path_array['protected_page'] = $pid;
-    $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $destination_path_array))
+    $response = new RedirectResponse(Url::fromUri('internal:/protected-page', ['query' => $destination_path_array])
       ->toString());
     $response->send();
     return;

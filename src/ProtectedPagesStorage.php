@@ -38,7 +38,7 @@ class ProtectedPagesStorage {
    */
   public function insertProtectedPage(array $page_data) {
     $query = $this->connection->insert('protected_pages')
-      ->fields(array('password', 'path'))
+      ->fields(['password', 'path'])
       ->values($page_data);
     $pid = $query->execute();
     return $pid;
@@ -81,7 +81,7 @@ class ProtectedPagesStorage {
    * @param bool $get_single_field
    *   Boolean to check if functions needs to return one or multiple fields.
    */
-  public function loadProtectedPage($fields = array(), $query_conditions = array(), $get_single_field = FALSE) {
+  public function loadProtectedPage($fields = [], $query_conditions = [], $get_single_field = FALSE) {
     $select = $this->connection->select('protected_pages');
     if (count($fields)) {
       $select->fields('protected_pages', $fields);
