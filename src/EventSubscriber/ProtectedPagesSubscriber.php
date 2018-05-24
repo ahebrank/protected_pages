@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Path\AliasManagerInterface;
@@ -46,6 +47,13 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    */
   protected $currentPath;
 
+   /**
+    * The request stack service.
+    *
+    * @var \Symfony\Component\HttpFoundation\RequestStack
+    */
+  protected $requestStack;
+
   /**
    * Page Cache Kill Switch Service.
    *
@@ -64,14 +72,17 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
    *   For getting the protected_pages storage service.
    * @param \Drupal\Core\Path\CurrentPathStack $current_path
    *   The current path.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   The request stack service.
    * @param \Drupal\Core\PageCache\ResponsePolicy\ResponsePolicyInterface $kill_switch
    *   For getting the page cache kill switch service.
    */
-  public function __construct(AccountInterface $current_user, AliasManagerInterface $alias_manager, ProtectedPagesStorage $protected_pages_storage, CurrentPathStack $current_path, ResponsePolicyInterface $kill_switch) {
+  public function __construct(AccountInterface $current_user, AliasManagerInterface $alias_manager, ProtectedPagesStorage $protected_pages_storage, CurrentPathStack $current_path, RequestStack $request_stack, ResponsePolicyInterface $kill_switch) {
     $this->currentUser = $current_user;
     $this->aliasManager = $alias_manager;
     $this->protectedPagesStorage = $protected_pages_storage;
     $this->currentPath = $current_path;
+    $this->requestStack = $request_stack;
     $this->killSwitch = $kill_switch;
   }
 
@@ -91,7 +102,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
     if (!$pid) {
-      $page_node = \Drupal::request()->attributes->get('node');
+      $page_node = $this->requestStack->attributes->get('node');
       if (is_object($page_node)) {
         $nid = $page_node->id();
         if (isset($nid) && is_numeric($nid)) {
