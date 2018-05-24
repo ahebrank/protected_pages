@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
 
@@ -18,6 +19,23 @@ use Drupal\Core\Url;
  * Redirects user to protected page login screen.
  */
 class ProtectedPagesSubscriber implements EventSubscriberInterface {
+
+  /**
+   * Page Cache Kill Switch Service.
+   *
+   * @var \Drupal\Core\PageCache\ResponsePolicy\KillSwitch
+   */
+  protected $killSwitch;
+
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\PageCache\ResponsePolicy\KillSwitch $kill_switch
+   *   For getting the page cache kill switch service.
+   */
+  public function __construct(KillSwitch $kill_switch) {
+    $this->killSwitch = $kill_switch;
+  }
 
   /**
    * Redirects user to protected page login screen.
@@ -37,7 +55,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
     if ($pid) {
-      \Drupal::service('page_cache_kill_switch')->trigger();
+      $this->killSwitch->trigger();
       $query = \Drupal::destination()->getAsArray();
       $query['protected_page'] = $pid;
       $response = new RedirectResponse(Url::fromUri('internal:/protected-page', array('query' => $query))
@@ -57,7 +75,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
                       ->getPathByAlias($current_path));
           $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
           if ($pid) {
-            \Drupal::service('page_cache_kill_switch')->trigger();
+            $this->killSwitch->trigger();
             $query = \Drupal::destination()->getAsArray();
             $query['protected_page'] = $pid;
 
