@@ -16,7 +16,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\protected_pages\ProtectedPagesStorage;
 use Drupal\Core\Path\CurrentPathStack;
-use Drupal\Core\PageCache\ResponsePolicy\ResponsePolicyInterface;
+use Drupal\Core\PageCache\ResponsePolicyInterface;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
 
