@@ -96,7 +96,7 @@ class ProtectedPagesSubscriber implements EventSubscriberInterface {
     $pid = $this->protectedPagesIsPageLocked($current_path, $normal_path);
 
     if (!$pid) {
-      $page_node = $this->requestStack->attributes->get('node');
+      $page_node = $this->requestStack->getCurrentRequest()->attributes->get('node');
       if (is_object($page_node)) {
         $nid = $page_node->id();
         if (isset($nid) && is_numeric($nid)) {
