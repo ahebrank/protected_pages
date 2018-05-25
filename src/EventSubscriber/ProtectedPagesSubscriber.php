@@ -21,6 +21,14 @@ use Drupal\Core\Url;
 class ProtectedPagesSubscriber implements EventSubscriberInterface {
 
   /**
+   * Current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  
+  /**
    * Alias Manager Service.
    *
    * @var \Drupal\Core\Path\AliasManagerInterface
